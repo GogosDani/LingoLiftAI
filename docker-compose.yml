@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build:
+      context: Frontend/vite-project
+    ports:
+      - "4000:4000"
+
+  backend:
+    build:
+      context: Backend/
+    env_file:
+      - .env
+    ports:
+      - "7000:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mcr.microsoft.com/mssql/server
+    env_file:
+      - .env
+    ports:
+      - "1435:1433"
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo > /dev/tcp/localhost/1433" ]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 10s

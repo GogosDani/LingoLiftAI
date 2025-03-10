@@ -1,15 +1,21 @@
-var builder = WebApplication.CreateBuilder(args);
+using dotenv.net;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+DotEnv.Load();
+builder.Configuration.AddEnvironmentVariables();
+
+var connectionString = builder.Configuration["ConnectionString"];
+var validIssuer = builder.Configuration["ValidIssuer"];
+var validAudience = builder.Configuration["ValidAudience"];
+var issuerSigningKey = builder.Configuration["JwtSecretKey"];
+var frontendUrl = builder.Configuration["FrontendUrl"];
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
