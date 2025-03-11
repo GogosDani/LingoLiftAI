@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var result = await _authService.RegisterAsync(request.Email, request.Password, request.Username);
+            var result = await _authService.RegisterAsync(request.Email, request.Password, request.Username, "User");
             if (result.errorMessage != "") return BadRequest(result.errorMessage);
             return Ok(result);
         }

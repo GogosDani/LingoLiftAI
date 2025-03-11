@@ -4,5 +4,5 @@ namespace Backend.Services;
 
 public interface ITokenService
 {
-    public string CreateToken(ApplicationUser user);
+    public string CreateToken(ApplicationUser user, string role);
 }

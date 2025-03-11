@@ -1,6 +1,7 @@
 using System.Text;
 using Backend.Data;
 using Backend.Models;
+using Backend.Services;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +33,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+using var scope = app.Services.CreateScope();
+var authenticationSeeder = scope.ServiceProvider.GetRequiredService<AuthenticationSeeder>();
+authenticationSeeder.AddRoles();
+authenticationSeeder.AddAdmin();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
@@ -40,12 +45,14 @@ app.Run();
 app.UseAuthentication();
 
 
-
 void AddServices()
 {
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddScoped<AuthenticationSeeder>();
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
 }
 
 void AddDbContext()

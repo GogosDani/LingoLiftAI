@@ -15,14 +15,15 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
     }
     
-    public async Task<RegistrationResult> RegisterAsync(string email, string password, string username)
+    public async Task<RegistrationResult> RegisterAsync(string email, string password, string username, string role)
     {
         var user = new ApplicationUser { UserName = username, Email = email };
-        var result = await _userManager.CreateAsync(user);
+        var result = await _userManager.CreateAsync(user, password);
         if (!result.Succeeded)
         {
             return new RegistrationResult(false,result.Errors.First().Description);
         }
+        await _userManager.AddToRoleAsync(user, role);
         return new RegistrationResult(true, "");
     }
 
@@ -39,7 +40,8 @@ public class AuthService : IAuthService
         {
             return new LoginResult(false, "Wrong password", null);
         }
-        var accessToken = _tokenService.CreateToken(managedUser);
+        var roles = await _userManager.GetRolesAsync(managedUser);
+        var accessToken = _tokenService.CreateToken(managedUser, roles[0]);
         return new LoginResult(true, "", accessToken);
     }
 }
