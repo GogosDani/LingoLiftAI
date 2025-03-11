@@ -51,12 +51,11 @@ public class LingoLiftContext : DbContext
             .WithMany()
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         modelBuilder.Entity<Test>()
-            .HasOne<Level>()
+            .HasOne(t => t.Language)
             .WithMany()
-            .HasForeignKey(t => t.LevelId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasForeignKey(t => t.LanguageId);
 
         modelBuilder.Entity<UserChallenge>()
             .HasKey(uc => new { uc.UserId, uc.DailyChallengeId });
@@ -78,10 +77,6 @@ public class LingoLiftContext : DbContext
             .WithMany()
             .HasForeignKey(cs => cs.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<CustomSet>()
-            .HasMany<WordPair>()
-            .WithOne();
 
         modelBuilder.Entity<CustomSet>()
             .HasOne(cs => cs.Level)
