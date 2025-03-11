@@ -1,0 +1,44 @@
+using Microsoft.AspNetCore.Mvc;
+using Backend.DTOs;
+using Backend.Services;
+namespace Backend.Controllers;
+
+[Route("api/auth")]
+[ApiController]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
+    {
+        try
+        {
+            var result = await _authService.RegisterAsync(request.Email, request.Password, request.Username);
+            if (result.errorMessage != "") return BadRequest(result.errorMessage);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpPost("login")]
+    public async Task<ActionResult> Authenticate([FromBody] LoginRequest request)
+    {
+        var result = await _authService.LoginAsync(request.Email, request.Password);
+        if (!result.Success)
+        {
+            return BadRequest(result.ErrorMessage);
+        }
+        return Ok(result.Token);
+    }
+
+
+}
