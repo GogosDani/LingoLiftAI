@@ -14,7 +14,7 @@ export default function FrontPage() {
     return (
         <>
             <Headbar showRegisterForm={setShowRegisterForm} showLoginForm={setShowLoginForm} />
-            <div className="flex flex-col md:flex-row px-4 md:px-32 pt-12 md:pt-24 items-center flex-wrap">
+            <div className="flex flex-col md:flex-row px-4 md:px-32 pt-12 md:pt-24 items-center flex-wrap z-0">
                 <div className="flex-1 flex justify-center">
                     <img src="logo.png" className="w-4/5 animate-pulse-scale"></img>
                 </div>
