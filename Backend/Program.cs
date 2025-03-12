@@ -120,6 +120,7 @@ void AddCors()
         options.AddPolicy("AllowFrontend",
             builder => builder
                 .WithOrigins(frontendUrl)
+                .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
     });

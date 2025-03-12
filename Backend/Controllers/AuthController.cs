@@ -33,12 +33,16 @@ public class AuthController : ControllerBase
     public async Task<ActionResult> Authenticate([FromBody] LoginRequest request)
     {
         var result = await _authService.LoginAsync(request.Email, request.Password);
+        Response.Cookies.Append("jwt", result.Token, new CookieOptions
+        {
+            HttpOnly = true,  
+            SameSite = SameSiteMode.Strict, 
+            Expires = DateTime.UtcNow.AddHours(0.5) 
+        });
         if (!result.Success)
         {
             return BadRequest(result.ErrorMessage);
         }
         return Ok(result.Token);
     }
-
-
 }

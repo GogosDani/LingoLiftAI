@@ -51,9 +51,9 @@ export default function RegisterForm({ show, setSuccess }: RegisterFormProps) {
                 <div className="flex flex-col gap-4 pt-8">
                     <input onChange={(e) => setRegisterData(prev => ({ ...prev, username: e.target.value }))} className="pl-6 h-14 rounded-lg border border-gray-300" type="text" id="email-input" placeholder="Enter username" />
                     <input onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))} className="pl-6 h-14 rounded-lg border border-gray-300" type="text" id="email-input" placeholder="Enter email" />
-                    <input onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))} className="pl-6 h-14 rounded-lg border border-gray-300" type="text" id="email-input" placeholder="Enter password" />
+                    <input onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))} className="pl-6 h-14 rounded-lg border border-gray-300" type="password" id="email-input" placeholder="Enter password" />
                     <input onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))} className="pl-6 h-14 rounded-lg border border-gray-300" type="password" id="password-input" placeholder="Enter password again" />
-                    <button className="mt-8 h-12 font-bold text-white font-mono bg-gradient-to-br from-[#EF4765] to-[#FF9A5A] rounded-lg">Login</button>
+                    <button className="mt-8 h-12 font-bold text-white font-mono bg-gradient-to-br from-[#EF4765] to-[#FF9A5A] rounded-lg">Sign Up</button>
                 </div>
             </form>
         </div>
