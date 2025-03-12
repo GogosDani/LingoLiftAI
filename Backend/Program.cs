@@ -38,12 +38,12 @@ var authenticationSeeder = scope.ServiceProvider.GetRequiredService<Authenticati
 authenticationSeeder.AddRoles();
 authenticationSeeder.AddAdmin();
 
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
 app.UseAuthentication();
-
 
 void AddServices()
 {
