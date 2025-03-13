@@ -7,7 +7,6 @@ export default function FrontPage() {
 
     const [showRegisterForm, setShowRegisterForm] = useState(false);
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const [success, setSuccess] = useState(false);
 
 
 
@@ -19,7 +18,7 @@ export default function FrontPage() {
                     <img src="logo.png" className="w-4/5 animate-pulse-scale"></img>
                 </div>
                 <div className="flex flex-col items-center flex-1 text-center">
-                    <div className="text-green-500 text-3xl h-10"> {success && "Registration was successful!"} </div>
+                    <div className="text-green-500 text-3xl h-10"> </div>
                     <div className="text-gray-600 font-bold text-2xl md:text-4xl w-4/5">
                         BEST WAY TO LEARN FOREIGN LANGUAGES WITH AI!
                     </div>
@@ -33,7 +32,7 @@ export default function FrontPage() {
                     </div>
                 </div>
                 {showLoginForm && <LoginForm show={setShowLoginForm} />}
-                {showRegisterForm && <RegisterForm show={setShowRegisterForm} setSuccess={setSuccess} />}
+                {showRegisterForm && <RegisterForm show={setShowRegisterForm} />}
             </div>
         </>
 

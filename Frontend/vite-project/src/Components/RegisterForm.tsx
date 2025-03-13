@@ -3,11 +3,10 @@ import { useState } from "react";
 
 type RegisterFormProps = {
     show: React.Dispatch<React.SetStateAction<boolean>>;
-    setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 
-export default function RegisterForm({ show, setSuccess }: RegisterFormProps) {
+export default function RegisterForm({ show }: RegisterFormProps) {
 
     const [registerData, setRegisterData] = useState({ password: "", email: "", username: "", confirmPassword: "" });
     const [errorMessage, setErrorMessage] = useState("");
@@ -26,10 +25,10 @@ export default function RegisterForm({ show, setSuccess }: RegisterFormProps) {
             const response = await api.post("/api/auth/register", { username: registerData.username, password: registerData.password, email: registerData.email });
             if (response.status === 200) {
                 show(prev => !prev);
-                setSuccess(true);
-                setTimeout(() => {
-                    setSuccess(false);
-                }, 3000)
+                await api.post("/api/auth/login", {
+                    password: registerData.password,
+                    email: registerData.email
+                });
                 return;
             }
         } catch (error: unknown) {
