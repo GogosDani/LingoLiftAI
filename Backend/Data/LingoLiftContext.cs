@@ -91,11 +91,6 @@ public class LingoLiftContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<UserLanguage>()
-            .HasOne<ApplicationUser>()
-            .WithMany()
-            .HasForeignKey(ul => ul.UserId);
-
-        modelBuilder.Entity<UserLanguage>()
             .HasOne(ul => ul.Language)
             .WithMany()
             .HasForeignKey(ul => ul.LanguageId);

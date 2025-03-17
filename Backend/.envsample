@@ -3,3 +3,4 @@ JwtSecretKey=SECRET_KEY
 ValidAudience=VALID_AUDIENCE
 ValidIssuer=VALID_ISSUER
 FrontendUrl=URL
+GeminiUrl=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=APIKEY
