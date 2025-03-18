@@ -8,4 +8,6 @@ public class BlindedStoryResponse
     public string Story { get; set; }
     [JsonPropertyName("words")]
     public string[] Words { get; set; }
+    [JsonPropertyName("answers")]
+    public string[] Answers { get; set; }
 }
