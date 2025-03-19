@@ -1,3 +1,3 @@
 namespace Backend.DTOs.AIDTOs;
 
-public record WritingResultRequest(int LanguageId, string[] Questions, string[] Answers);
+public record WritingResultRequest(int LanguageId, string[] Answers);

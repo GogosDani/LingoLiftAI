@@ -1,12 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text.Json;
 using Backend.DTOs.AIDTOs;
 using Backend.Exceptions.AIExceptions;
 using Backend.Models;
 using Backend.Services.AIServices;
 using Backend.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Backend.Controllers;
 
@@ -14,10 +16,9 @@ namespace Backend.Controllers;
 [ApiController]
 public class TestController : ControllerBase
 {
-
     private readonly IUserLanguageRepository _repository;
     private readonly IAIClient _aiClient;
-    private readonly  string[] levels = new string[]{"beginner", "elementary", "intermediate", "upper intermediate", "advanced", "proficient"};
+    private readonly string[] levels = {"beginner", "elementary", "intermediate", "upper intermediate", "advanced", "proficient"};
     
     public TestController(IUserLanguageRepository repository, IAIClient aiClient)
     {
@@ -61,6 +62,7 @@ public class TestController : ControllerBase
             {
                 return StatusCode(500, new { message = "AI did not return exactly three questions" });
             }
+            
             return Ok(questions);
         }
         catch (NullGeminiUrlException ex)
@@ -77,49 +79,35 @@ public class TestController : ControllerBase
         }
     }
     
-    [HttpPost("writing-result")]
-    public async Task<ActionResult> WritingTestResult(WritingResultRequest request)
-    {
-        try
-        {
-            var userId = GetUserId();
-            if (userId == null) return Unauthorized();
-            var formattedQA = string.Join("\n\n", 
-                request.Questions.Zip(request.Answers, (q, a) => $"{q}\n{a}"));
-            var languageLevel = await _aiClient.GetAiAnswer(
-                $"How would you rate the user's language level based on the questions-answers? Choose between: Beginner, Elementary, Intermediate, Upper Intermediate, Advanced, Proficient \n\n{formattedQA} IMPORTANT: Only return the language level, nothing else" );
-            if(!levels.Contains(languageLevel.ToLower().Trim()))  return StatusCode(500, new { message = "AI did not return a proper level" });
-            await _repository.AddUserLanguageLevel(userId, request.LanguageId, languageLevel);
-            return Ok(languageLevel);
-        }
-        catch (NullGeminiUrlException ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
-        catch (NullAnswerException ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
-    }
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    // [HttpPost("writing-result")]
+    // public async Task<ActionResult> WritingTestResult(WritingResultRequest request)
+    // {
+    //     try
+    //     {
+    //         var userId = GetUserId();
+    //         if (userId == null) return Unauthorized();
+    //          questions  = _repository
+    //         var formattedQA = string.Join("\n\n", 
+    //             /request.questions.Zip(request.Answers, (q, a) => $"{q}\n{a}"));
+    //         var languageLevel = await _aiClient.GetAiAnswer(
+    //             $"How would you rate the user's language level based on the questions-answers? Choose between: Beginner, Elementary, Intermediate, Upper Intermediate, Advanced, Proficient \n\n{formattedQA} IMPORTANT: Only return the language level, nothing else" );
+    //         if(!levels.Contains(languageLevel.ToLower().Trim()))  return StatusCode(500, new { message = "AI did not return a proper level" });
+    //         await _repository.AddUserLanguageLevel(userId, request.LanguageId, languageLevel);
+    //         return Ok(languageLevel);
+    //     }
+    //     catch (NullGeminiUrlException ex)
+    //     {
+    //         return StatusCode(500, new { message = ex.Message });
+    //     }
+    //     catch (NullAnswerException ex)
+    //     {
+    //         return StatusCode(500, new { message = ex.Message });
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return StatusCode(500, new { message = ex.Message });
+    //     }
+    // }
     
     
     
@@ -184,38 +172,6 @@ public class TestController : ControllerBase
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
     [HttpPost("blinded")]
     public async Task<IActionResult> BlindedTest(BlindedTestRequest request)
     {
@@ -254,8 +210,8 @@ public class TestController : ControllerBase
         }
     }
 
-
-    [HttpPost("blinded-result")]
+    
+      [HttpPost("blinded-result")]
     public async Task<IActionResult> BlindedTestResult(BlindedResultRequest request)
     {
         try
@@ -289,9 +245,54 @@ public class TestController : ControllerBase
         }
     }
     
+    [HttpPost("correction")]
+    public async Task<IActionResult> CorrectionTest(BlindedTestRequest request)
+    {
+        try
+        {
+            var userId = GetUserId();
+            var languageEntity = await _repository.GetLanguageById(request.languageId);
+            var language = languageEntity.LanguageName;
+            var level = await _repository.GetUserLanguageLevel(userId, request.languageId);
+            var prompt = $"In {language} language, in language level {level}, generate 5 wrong sentences to test user's english skills. 2 sentences should be at higher level. Return your response as a valid JSON object with this structure: {{ \"\"sentences\"\": [\"\"sentence 1\"\", \"\"sentence  2\"\", \"\"sentence  3\"\", \"\"sentence  4\"\", \"\"sentence  5\"\"] }} Important: Return ONLY the raw JSON object without any markdown formatting, code blocks, or backticks.";
+            var aiAnswer = await _aiClient.GetAiAnswer(prompt);
+            string cleanedResponse = CleanMarkdownResponse(aiAnswer);
+            var responseData = JsonSerializer.Deserialize<CorrectionResponse>(cleanedResponse);
+            return Ok(new
+            {
+                sentences = responseData.Sentences,
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
     
+    [HttpPost("correction-result")]
+    public async Task<IActionResult> CorrectionResult(CorrectionResultRequest request)
+    {
+        try
+        {
+            var prompt = $"How many answers are correct? The first sentence is always the incorrect and the second is the user's answer. Return only a number (0-5) based on correct sentences.";
+            var points = await _aiClient.GetAiAnswer(prompt);
+            if (points == "5")
+            {
+                var userId = GetUserId();
+                var level = await _repository.GetUserLanguageLevel(userId, request.LanguageId);
+                var next = await _repository.GetNextLevel(level);
+                await _repository.ChangeLanguageLevel(userId, request.LanguageId, next);
+            }
 
-   
+            return Ok(points);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+
     private string CleanMarkdownResponse(string response)
     {
         if (response.StartsWith("```json") || response.StartsWith("```"))
