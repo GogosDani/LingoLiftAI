@@ -5,6 +5,7 @@ import FrontPage from "./Pages/FrontPage";
 import LeaderBoard from "./Pages/LeaderBoard";
 import DailyChallenge from "./Pages/DailyChallenge";
 import Home from "./Pages/Home";
+import PlacementTest from "./Pages/PlacementTest";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />
+  },
+  {
+    path: "/placement-test",
+    element: <PlacementTest />
   }
 ])
 
