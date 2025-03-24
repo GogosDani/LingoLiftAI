@@ -11,7 +11,12 @@ type Language = {
     id: number;
 };
 
-export default function ChooseNewLanguage() {
+type ChooseNewLanguageProps = {
+    setLanguageId: React.Dispatch<React.SetStateAction<number>>;
+};
+
+
+export default function ChooseNewLanguage({ setLanguageId }: ChooseNewLanguageProps) {
 
     const [languages, setLanguages] = useState<Language[]>([]);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
@@ -28,18 +33,21 @@ export default function ChooseNewLanguage() {
     return (
         <>
             <Headbar showRegisterForm={setShowRegisterForm} showLoginForm={setShowLoginForm} />
-            <div className="flex flex-col items-center justify-center h-screen text-center gap-36">
-                <div className="font-mono text-6xl font-bold">Which language do you want to learn?</div>
-                <div className="flex flex-row gap-4">
-                    {languages.map(l => (
+            <div className="flex flex-col items-center justify-center min-h-screen text-center gap-12 sm:gap-36 py-24">
+                <div className="font-mono font-bold text-4xl sm:text-6xl">
+                    Which language do you want to learn?
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    {languages.map((l) => (
                         <div
                             key={l.id}
-                            className="flex flex-col items-center w-32 transition-transform duration-300 hover:scale-110"
+                            onClick={() => setLanguageId(l.id)}
+                            className="flex flex-col items-center w-24 sm:w-32 transition-transform duration-300 hover:scale-110"
                         >
-                            <div className="w-24 h-20">
-                                <img src={l.flag} />
+                            <div className="w-20 h-16 sm:w-24 sm:h-20">
+                                <img src={l.flag} alt={`${l.languageName} flag`} className="w-full h-full object-cover" />
                             </div>
-                            <div className="font-bold text-2xl">{l.languageName}</div>
+                            <div className="font-bold text-xl sm:text-2xl">{l.languageName}</div>
                         </div>
                     ))}
                 </div>
@@ -47,6 +55,5 @@ export default function ChooseNewLanguage() {
             {showLoginForm && <LoginForm show={setShowLoginForm} />}
             {showRegisterForm && <RegisterForm show={setShowRegisterForm} />}
         </>
-
     )
 }
