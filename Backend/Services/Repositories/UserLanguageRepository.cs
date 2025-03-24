@@ -17,10 +17,6 @@ public class UserLanguageRepository : IUserLanguageRepository
     {
         return await _context.UserLanguageLevels.AnyAsync(l => l.UserId == userId);
     }
-    public async Task<bool> UserHasLanguageLevel(string userId, int languageId)
-    {
-        return await _context.UserLanguageLevels.AnyAsync(l => l.UserId == userId && l.LanguageId == languageId);
-    }
 
     public async Task<string> GetUserLanguageLevel(string userId, int languageId)
     {
@@ -56,6 +52,67 @@ public class UserLanguageRepository : IUserLanguageRepository
        return await _context.Languages.FirstOrDefaultAsync(l => l.Id == id);
     }
 
+    public async Task<int> AddWritingQuestions(string[] questions, string userId)
+    {
+        var writingQuestionsEntity = new WritingQuestions
+        {
+            UserId = userId,
+            Questions = questions.Select(q => new WritingQuestion { QuestionText = q }).ToList()
+        };
+            var entity = _context.WritingQuestionSet.Add(writingQuestionsEntity);
+            await _context.SaveChangesAsync();
+            return entity.Entity.Id;
+    }
+
+    public async Task<IEnumerable<WritingQuestion>> GetWritingQuestions(int questionSetId)
+    {
+        var questionSet = await _context.WritingQuestionSet.FirstOrDefaultAsync(s => s.Id == questionSetId);
+        return questionSet.Questions;
+    }
+
+    public async Task<int> AddReadingTest(string userId, string story, string[] questions)
+    {
+        var test = new ReadingTest { Questions = questions.Select(q => new ReadingQuestion{QuestionText = q}).ToList(), Story = story, UserId = userId };
+        var entity = _context.ReadingTests.Add(test);
+        await _context.SaveChangesAsync();
+        return entity.Entity.Id;
+    }
+
+    public async Task<ReadingTest> GetReadingTest(int id)
+    {
+        return await _context.ReadingTests
+            .Include(rt => rt.Questions)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<int> AddBlindedTest(string userId, string story, string[] words, string[] corrects)
+    {
+        var test = new BlindedTest{Corrects = corrects.Select(x => new BlindedCorrect{Correct = x}).ToList(), Story = story, UserId = userId, Words = words.Select(x => new BlindedWord{Word = x}).ToList()};
+        var entity = _context.BlindedTests.Add(test);
+        await _context.SaveChangesAsync();
+        return entity.Entity.Id;
+    }
+
+    public async Task<BlindedTest> GetBlindedTest(int id)
+    {
+       return await _context.BlindedTests.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<int> AddCorrection(string[] sentences, string userId)
+    {
+        var test = new CorrectionTest
+            { Sentences = sentences.Select(x => new CorrectionSentence { Word = x }).ToList(), UserId = userId };
+        var entity = _context.CorrectionTests.Add(test);
+        await _context.SaveChangesAsync();
+        return entity.Entity.Id;
+    }
+
+    public async Task<CorrectionTest> GetCorrectionTest(int id)
+    {
+        return await _context.CorrectionTests
+            .Include(ct => ct.Sentences)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
 
     // After writing test, user gets a language level
     public async Task AddUserLanguageLevel(string userId, int languageId, string level)

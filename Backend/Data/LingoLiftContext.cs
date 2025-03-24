@@ -14,6 +14,15 @@ public class LingoLiftContext : DbContext
     public DbSet<UserChallenge> UserChallenges { get; set; }
     public DbSet<WordPair> WordPairs { get; set; }
     public DbSet<UserLanguage> UserLanguageLevels { get; set; }
+    public DbSet<WritingQuestions> WritingQuestionSet { get; set; }
+    public DbSet<WritingQuestion> WritingQuestions { get; set; }
+    public DbSet<ReadingQuestion> ReadingQuestions { get; set; }
+    public DbSet<ReadingTest> ReadingTests { get; set; }
+    public DbSet<BlindedTest> BlindedTests {get; set;}
+    public DbSet<BlindedWord> BlindedWords {get; set;}
+    public DbSet<BlindedCorrect> BlindedCorrects { get; set; }
+    public DbSet<CorrectionTest> CorrectionTests {get; set;}
+    public DbSet<CorrectionSentence> CorrectionSentences { get; set; }
 
     public LingoLiftContext(DbContextOptions<LingoLiftContext> options) : base(options)
     {
@@ -99,5 +108,81 @@ public class LingoLiftContext : DbContext
             .HasOne(ul => ul.Level)
             .WithMany()
             .HasForeignKey(ul => ul.LevelId);
+        
+        modelBuilder.Entity<WritingQuestions>()
+            .HasKey(wq => wq.Id);
+
+        modelBuilder.Entity<WritingQuestions>()
+            .HasMany(wq => wq.Questions)
+            .WithOne(q => q.WritingQuestions)
+            .HasForeignKey(q => q.WritingQuestionsId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<WritingQuestion>()
+            .HasKey(q => q.Id);
+
+        modelBuilder.Entity<WritingQuestion>()
+            .Property(q => q.QuestionText)
+            .IsRequired()
+            .HasMaxLength(200);
+        
+        
+        modelBuilder.Entity<ReadingTest>()
+            .HasKey(rt => rt.Id);
+
+        modelBuilder.Entity<ReadingTest>()
+            .Property(rt => rt.UserId)
+            .IsRequired();
+
+        modelBuilder.Entity<ReadingTest>()
+            .Property(rt => rt.Story)
+            .IsRequired();
+
+        modelBuilder.Entity<ReadingQuestion>()
+            .HasKey(q => q.Id); 
+
+        modelBuilder.Entity<ReadingQuestion>()
+            .Property(q => q.QuestionText)
+            .IsRequired()
+            .HasMaxLength(250);
+
+        modelBuilder.Entity<ReadingTest>()
+            .HasMany(rt => rt.Questions)  
+            .WithOne(q => q.ReadingTest)
+            .HasForeignKey(q => q.ReadingTestId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<BlindedTest>()
+            .HasKey(bt => bt.Id);
+
+        modelBuilder.Entity<BlindedWord>()
+            .HasKey(bw => bw.Id);
+        modelBuilder.Entity<BlindedWord>()
+            .HasOne(bw => bw.BlindedTest)
+            .WithMany(bt => bt.Words)
+            .HasForeignKey(bw => bw.BlindedTestId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BlindedCorrect>()
+            .HasKey(bc => bc.Id);
+        modelBuilder.Entity<BlindedCorrect>()
+            .HasOne(bc => bc.BlindedTest)
+            .WithMany(bt => bt.Corrects)
+            .HasForeignKey(bc => bc.BlindedTestId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        
+        modelBuilder.Entity<CorrectionTest>()
+            .HasKey(ct => ct.Id);
+
+        modelBuilder.Entity<CorrectionSentence>()
+            .HasKey(cs => cs.Id);
+        modelBuilder.Entity<CorrectionSentence>()
+            .HasOne(cs => cs.CorrectionTest)
+            .WithMany(ct => ct.Sentences)
+            .HasForeignKey(cs => cs.CorrectionTestId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
+    
+    
 }

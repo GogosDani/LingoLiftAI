@@ -1,3 +1,3 @@
 namespace Backend.DTOs.AIDTOs;
 
-public record BlindedResultRequest(int LanguageId, string[] CorrectAnswers, string[] UserAnswers);
+public record BlindedResultRequest(int LanguageId, int BlindedTestId, string[] UserAnswers);
