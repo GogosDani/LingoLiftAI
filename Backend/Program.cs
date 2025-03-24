@@ -92,6 +92,18 @@ void AddAuthentication()
                     Encoding.UTF8.GetBytes(issuerSigningKey)
                 ),
             };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var cookie = context.Request.Cookies["jwt"];
+                    if (!string.IsNullOrEmpty(cookie))
+                    {
+                        context.Token = cookie;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         });
 }
 

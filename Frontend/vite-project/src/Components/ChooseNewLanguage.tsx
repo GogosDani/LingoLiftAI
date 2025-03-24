@@ -4,6 +4,7 @@ import { api } from "../axios/api";
 type Language = {
     languageName: string;
     flag: string;
+    id: number;
 };
 
 export default function ChooseNewLanguage() {
@@ -12,7 +13,7 @@ export default function ChooseNewLanguage() {
 
     useEffect(() => {
         async function fetchLanguages() {
-            const response = await api.get("languages");
+            const response = await api.get("/api/language");
             setLanguages(response.data);
         }
         fetchLanguages();
@@ -21,7 +22,10 @@ export default function ChooseNewLanguage() {
     return (
         <>
             <div> Which language do you want to learn? </div>
-            {languages.map(l => <div> {l.languageName} </div>)}
+            {languages.map(l => <div key={l.id}>
+                <img src={l.flag} className="w-4" />
+                <div> {l.languageName}  </div>
+            </div>)}
         </>
     )
 }
