@@ -2,12 +2,15 @@ using System.Text;
 using Backend.Data;
 using Backend.Models;
 using Backend.Services;
+using Backend.Services.AIServices;
+using Backend.Services.Repositories;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load();
@@ -53,6 +56,8 @@ void AddServices()
     builder.Services.AddScoped<AuthenticationSeeder>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<IAIClient, AIClient>();
+    builder.Services.AddScoped<IUserLanguageRepository, UserLanguageRepository>();
 }
 
 void AddDbContext()

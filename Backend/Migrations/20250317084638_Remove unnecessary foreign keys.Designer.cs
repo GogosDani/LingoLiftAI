@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(LingoLiftContext))]
-    partial class LingoLiftContextModelSnapshot : ModelSnapshot
+    [Migration("20250317084638_Remove unnecessary foreign keys")]
+    partial class Removeunnecessaryforeignkeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,110 +81,6 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ApplicationUser");
-                });
-
-            modelBuilder.Entity("Backend.Models.BlindedCorrect", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BlindedTestId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Correct")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlindedTestId");
-
-                    b.ToTable("BlindedCorrects");
-                });
-
-            modelBuilder.Entity("Backend.Models.BlindedTest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Story")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BlindedTests");
-                });
-
-            modelBuilder.Entity("Backend.Models.BlindedWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BlindedTestId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlindedTestId");
-
-                    b.ToTable("BlindedWords");
-                });
-
-            modelBuilder.Entity("Backend.Models.CorrectionSentence", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CorrectionTestId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CorrectionTestId");
-
-                    b.ToTable("CorrectionSentences");
-                });
-
-            modelBuilder.Entity("Backend.Models.CorrectionTest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CorrectionTests");
                 });
 
             modelBuilder.Entity("Backend.Models.CustomSet", b =>
@@ -341,50 +240,6 @@ namespace Backend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Backend.Models.ReadingQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("QuestionText")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<int>("ReadingTestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReadingTestId");
-
-                    b.ToTable("ReadingQuestions");
-                });
-
-            modelBuilder.Entity("Backend.Models.ReadingTest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Story")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ReadingTests");
-                });
-
             modelBuilder.Entity("Backend.Models.Test", b =>
                 {
                     b.Property<int>("Id")
@@ -516,79 +371,6 @@ namespace Backend.Migrations
                     b.ToTable("WordPairs");
                 });
 
-            modelBuilder.Entity("Backend.Models.WritingQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("QuestionText")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("WritingQuestionsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WritingQuestionsId");
-
-                    b.ToTable("WritingQuestions");
-                });
-
-            modelBuilder.Entity("Backend.Models.WritingQuestions", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WritingQuestionSet");
-                });
-
-            modelBuilder.Entity("Backend.Models.BlindedCorrect", b =>
-                {
-                    b.HasOne("Backend.Models.BlindedTest", "BlindedTest")
-                        .WithMany("Corrects")
-                        .HasForeignKey("BlindedTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BlindedTest");
-                });
-
-            modelBuilder.Entity("Backend.Models.BlindedWord", b =>
-                {
-                    b.HasOne("Backend.Models.BlindedTest", "BlindedTest")
-                        .WithMany("Words")
-                        .HasForeignKey("BlindedTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BlindedTest");
-                });
-
-            modelBuilder.Entity("Backend.Models.CorrectionSentence", b =>
-                {
-                    b.HasOne("Backend.Models.CorrectionTest", "CorrectionTest")
-                        .WithMany("Sentences")
-                        .HasForeignKey("CorrectionTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CorrectionTest");
-                });
-
             modelBuilder.Entity("Backend.Models.CustomSet", b =>
                 {
                     b.HasOne("Backend.Models.ApplicationUser", null)
@@ -608,17 +390,6 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Level");
-                });
-
-            modelBuilder.Entity("Backend.Models.ReadingQuestion", b =>
-                {
-                    b.HasOne("Backend.Models.ReadingTest", "ReadingTest")
-                        .WithMany("Questions")
-                        .HasForeignKey("ReadingTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ReadingTest");
                 });
 
             modelBuilder.Entity("Backend.Models.Test", b =>
@@ -695,17 +466,6 @@ namespace Backend.Migrations
                         .HasForeignKey("CustomSetId");
                 });
 
-            modelBuilder.Entity("Backend.Models.WritingQuestion", b =>
-                {
-                    b.HasOne("Backend.Models.WritingQuestions", "WritingQuestions")
-                        .WithMany("Questions")
-                        .HasForeignKey("WritingQuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WritingQuestions");
-                });
-
             modelBuilder.Entity("Backend.Models.ApplicationUser", b =>
                 {
                     b.Navigation("CustomSets");
@@ -713,18 +473,6 @@ namespace Backend.Migrations
                     b.Navigation("Tests");
 
                     b.Navigation("UserLanguages");
-                });
-
-            modelBuilder.Entity("Backend.Models.BlindedTest", b =>
-                {
-                    b.Navigation("Corrects");
-
-                    b.Navigation("Words");
-                });
-
-            modelBuilder.Entity("Backend.Models.CorrectionTest", b =>
-                {
-                    b.Navigation("Sentences");
                 });
 
             modelBuilder.Entity("Backend.Models.CustomSet", b =>
@@ -735,16 +483,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.DailyChallenge", b =>
                 {
                     b.Navigation("UserChallenges");
-                });
-
-            modelBuilder.Entity("Backend.Models.ReadingTest", b =>
-                {
-                    b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("Backend.Models.WritingQuestions", b =>
-                {
-                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

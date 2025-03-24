@@ -45,4 +45,11 @@ public class AuthController : ControllerBase
         }
         return Ok(result.Token);
     }
+
+    [HttpGet("check")]
+    public IActionResult CheckAuthentication()
+    {
+        if (Request.Cookies.ContainsKey("jwt")) return Ok("Authenticated!");
+        return Unauthorized("Not Authenticated!");
+    }
 }
