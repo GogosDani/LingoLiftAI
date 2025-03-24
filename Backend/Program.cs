@@ -58,6 +58,7 @@ void AddServices()
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IAIClient, AIClient>();
     builder.Services.AddScoped<IUserLanguageRepository, UserLanguageRepository>();
+    builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
 }
 
 void AddDbContext()
