@@ -3,6 +3,7 @@ import { api } from "../axios/api";
 import Headbar from "./Headbar";
 import LoginForm from "../Components/LoginForm";
 import RegisterForm from "../Components/RegisterForm";
+import { useNavigate } from "react-router-dom";
 
 
 type Language = {
@@ -13,14 +14,16 @@ type Language = {
 
 type ChooseNewLanguageProps = {
     setLanguageId: React.Dispatch<React.SetStateAction<number>>;
+    setStage: React.Dispatch<React.SetStateAction<number>>;
 };
 
 
-export default function ChooseNewLanguage({ setLanguageId }: ChooseNewLanguageProps) {
+export default function ChooseNewLanguage({ setLanguageId, setStage }: ChooseNewLanguageProps) {
 
     const [languages, setLanguages] = useState<Language[]>([]);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
     const [showLoginForm, setShowLoginForm] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchLanguages() {
@@ -30,11 +33,17 @@ export default function ChooseNewLanguage({ setLanguageId }: ChooseNewLanguagePr
         fetchLanguages();
     }, [])
 
+
+    async function continueWithoutTest() {
+        // add new user language to the DB with the beginner level, navigate to home page
+        navigate("/home");
+    }
+
     return (
         <>
             <Headbar showRegisterForm={setShowRegisterForm} showLoginForm={setShowLoginForm} />
-            <div className="flex flex-col items-center justify-center min-h-screen text-center gap-12 sm:gap-36 py-24">
-                <div className="font-mono font-bold text-4xl sm:text-6xl">
+            <div className="flex flex-col items-center justify-center min-h-screen text-center py-24">
+                <div className="font-mono font-bold text-4xl sm:text-6xl pb-20">
                     Which language do you want to learn?
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -51,6 +60,21 @@ export default function ChooseNewLanguage({ setLanguageId }: ChooseNewLanguagePr
                         </div>
                     ))}
                 </div>
+                <div className="mt-12 flex flex-col items-center">
+                    <div className="font-mono font-bold text-xl sm:text-lg text-center">
+                        Do you have any experience in this language?
+                    </div>
+                    <div className="flex flex-row gap-8 mt-4">
+                        <button onClick={() => setStage(1)} className="flex items-center justify-center text-white font-bold text-lg px-6 py-4 rounded-[14px] border-0 bg-[#38D2D2] shadow-[inset_-3px_-3px_9px_rgba(255,255,255,0.25),inset_0px_3px_9px_rgba(255,255,255,0.3),inset_0px_1px_1px_rgba(255,255,255,0.6),inset_0px_-8px_36px_rgba(0,0,0,0.3),inset_0px_1px_5px_rgba(255,255,255,0.6),2px_19px_31px_rgba(0,0,0,0.2)] h-12">
+                            YES
+                        </button>
+                        <button onClick={() => continueWithoutTest()} className="flex items-center justify-center text-white font-bold text-lg px-6 py-4 rounded-[14px] border-0 bg-[#38D2D2] shadow-[inset_-3px_-3px_9px_rgba(255,255,255,0.25),inset_0px_3px_9px_rgba(255,255,255,0.3),inset_0px_1px_1px_rgba(255,255,255,0.6),inset_0px_-8px_36px_rgba(0,0,0,0.3),inset_0px_1px_5px_rgba(255,255,255,0.6),2px_19px_31px_rgba(0,0,0,0.2)] h-12">
+                            NO
+                        </button>
+
+                    </div>
+                </div>
+
             </div>
             {showLoginForm && <LoginForm show={setShowLoginForm} />}
             {showRegisterForm && <RegisterForm show={setShowRegisterForm} />}
