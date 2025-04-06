@@ -16,7 +16,7 @@ export default function PlacementTest() {
 
     const tests: Record<number, React.ReactNode> = {
         0: <ChooseNewLanguage setLanguageId={setLanguageId} languageId={languageId} setStage={setStage} />,
-        1: < WritingTest setStage={setStage} />,
+        1: < WritingTest setStage={setStage} languageId={languageId} />,
         2: <ReadingTest />,
         3: <BlindedTest />,
         4: <CorrectTest />
