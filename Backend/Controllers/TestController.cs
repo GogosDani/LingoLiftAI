@@ -28,10 +28,7 @@ public class TestController : ControllerBase
     {
         try
         {
-            if (!HttpContext.Request.Cookies.TryGetValue("jwt", out var userId))
-            {
-                return Unauthorized(new { message = "User not authenticated" });
-            }
+            var userId = GetUserId();
             if (!await _repository.UserHasLevel(userId)) return Ok(new { TestAvailable = false });
             return Ok(new { TestAvailable = true });
         } 

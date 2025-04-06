@@ -15,10 +15,11 @@ type Language = {
 type ChooseNewLanguageProps = {
     setLanguageId: React.Dispatch<React.SetStateAction<number>>;
     setStage: React.Dispatch<React.SetStateAction<number>>;
+    languageId: number;
 };
 
 
-export default function ChooseNewLanguage({ setLanguageId, setStage }: ChooseNewLanguageProps) {
+export default function ChooseNewLanguage({ setLanguageId, languageId, setStage }: ChooseNewLanguageProps) {
 
     const [languages, setLanguages] = useState<Language[]>([]);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
@@ -35,9 +36,17 @@ export default function ChooseNewLanguage({ setLanguageId, setStage }: ChooseNew
 
 
     async function continueWithoutTest() {
-        // add new user language to the DB with the beginner level, navigate to home page
-        navigate("/home");
+        try {
+            const response = await api.post("/api/language", {
+                languageId: languageId
+            });
+            if (response.status == 200) navigate("/home");
+        }
+        catch (error) {
+            console.error(error)
+        }
     }
+
 
     return (
         <>
