@@ -24,7 +24,8 @@ export default function Headbar({ showRegisterForm, showLoginForm }: HeaderProps
 
     async function handleLogout() {
         try {
-            await api.post('/api/auth/logout');
+            const response = await api.post('/api/auth/logout');
+            if (response.status == 200) setLoggedIn(false);
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -48,7 +49,6 @@ export default function Headbar({ showRegisterForm, showLoginForm }: HeaderProps
                     <button onClick={() => showRegisterForm(true)} className="self-center bg-blue-600 rounded-xl h-3/4 w-20 md:w-24 text-white font-bold"> Sign up </button>
                 </div>
             )}
-
         </div>
     );
 }
