@@ -9,6 +9,7 @@ export default function PlacementTest() {
 
     const [stage, setStage] = useState<number>(0);
     const [languageId, setLanguageId] = useState(0);
+    const [level, setLevel] = useState("asd");
 
     useEffect(() => {
         console.log(languageId);
@@ -16,8 +17,8 @@ export default function PlacementTest() {
 
     const tests: Record<number, React.ReactNode> = {
         0: <ChooseNewLanguage setLanguageId={setLanguageId} languageId={languageId} setStage={setStage} />,
-        1: < WritingTest setStage={setStage} languageId={languageId} />,
-        2: <ReadingTest />,
+        1: < WritingTest setStage={setStage} languageId={languageId} setLevel={setLevel} />,
+        2: <ReadingTest setStage={setStage} languageId={languageId} level={level} setLevel={setLevel} />,
         3: <BlindedTest />,
         4: <CorrectTest />
     };
