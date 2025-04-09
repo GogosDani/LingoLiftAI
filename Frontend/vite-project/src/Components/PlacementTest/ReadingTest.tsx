@@ -6,7 +6,7 @@ export default function ReadingTest({ setStage, languageId, level, setLevel }: {
 
     const [testId, setTestId] = useState(0);
     const [testData, setTestData] = useState("");
-    const [questions, SetQuestions] = useState([]);
+    const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState(["", "", ""]);
     const [error, setError] = useState("");
 
@@ -20,7 +20,7 @@ export default function ReadingTest({ setStage, languageId, level, setLevel }: {
                 if (response.status === 200) {
                     setTestData(response.data.text);
                     setTestId(response.data.id);
-                    SetQuestions(response.data.questions);
+                    setQuestions(response.data.questions);
                 } else {
                     throw new Error(`Error fetching test: ${response.status}`);
                 }
