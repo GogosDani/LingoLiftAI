@@ -59,6 +59,7 @@ void AddServices()
     builder.Services.AddScoped<IAIClient, AIClient>();
     builder.Services.AddScoped<IUserLanguageRepository, UserLanguageRepository>();
     builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+    builder.Services.AddScoped<ILevelRepository, LevelRepository>();
 }
 
 void AddDbContext()
