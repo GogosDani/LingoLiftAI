@@ -19,7 +19,7 @@ export default function PlacementTest() {
         0: <ChooseNewLanguage setLanguageId={setLanguageId} languageId={languageId} setStage={setStage} />,
         1: < WritingTest setStage={setStage} languageId={languageId} setLevel={setLevel} />,
         2: <ReadingTest setStage={setStage} languageId={languageId} level={level} setLevel={setLevel} />,
-        3: <BlindedTest />,
+        3: <BlindedTest setStage={setStage} languageId={languageId} />,
         4: <CorrectTest />
     };
 
