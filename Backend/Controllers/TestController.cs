@@ -211,12 +211,12 @@ public class TestController : ControllerBase
             var prompt =$"Create a fill-in-the-blank exercise in {language} for a {level} level student.\n\n" +
                         $"Requirements:\n" +
                         $"- Write a coherent passage (150-250 words)\n" +
-                        $"- Replace exactly 10 words with blanks (represented as '-----')\n" +
+                        $"- Replace exactly 10 words with blanks (represented as '_____')\n" +
                         $"- 7 blanks should be appropriate for {level} level\n" +
                         $"- 3 blanks should use vocabulary from the next level up\n" +
                         $"- Provide a list of 15 possible words (the 10 correct answers plus 5 distractors)\n\n" +
                         $"Return ONLY valid JSON in this exact format:\n" +
-                        $"{{\n  \"story\": \"Your text with ----- blanks here\",\n  " +
+                        $"{{\n  \"story\": \"Your text with _____ blanks here\",\n  " +
                         $"\"words\": [\"word1\", \"word2\", ... , \"word15\"],\n  " +
                         $"\"answers\": [\"correct1\", \"correct2\", ... , \"correct10\"]\n}}";
             var aiAnswer = await _aiClient.GetAiAnswer(prompt);
