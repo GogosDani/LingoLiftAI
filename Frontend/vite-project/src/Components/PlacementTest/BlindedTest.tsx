@@ -10,6 +10,15 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
     const [words, setWords] = useState<string[]>([]);
     const [error, setError] = useState("");
     const [filledSpaces, setFilledSpaces] = useState<{ [key: number]: string }>({});
+    const [testId, setTestId] = useState(0);
+    const [level, setLevel] = useState("");
+
+    useEffect(() => {
+        async function getLevel() {
+
+        }
+        getLevel();
+    }, [])
 
     useEffect(() => {
         async function getBlindedTest() {
@@ -20,6 +29,7 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
                 if (response.status === 200) {
                     setTestData(response.data.story);
                     setWords(response.data.words);
+                    setTestId(response.data.id);
                 } else {
                     throw new Error(`Error fetching test: ${response.status}`);
                 }
@@ -49,6 +59,22 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
         }
     };
 
+    async function submitTest() {
+        try {
+            const response = await api.post("/api/test/blinded-result", {
+                languageId: languageId,
+                userAnswers: Object.values(filledSpaces),
+                blindedTestId: testId
+            });
+            setStage(prev => prev + 1);
+            console.log(response.data);
+        }
+        catch (error) {
+            console.error("Failed to submit writing test: " + error);
+            setError("Unable to submit your answers. Please try again.");
+        }
+    }
+
     return (
         <DndProvider backend={HTML5Backend}>
             <div className="max-w-4xl mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-lg">
@@ -68,6 +94,16 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
                             <DraggableWord key={`${word}-${index}`} word={word} />
                         ))}
                     </div>
+                </div>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <button
+                    onClick={submitTest}
+                    className="w-full sm:w-auto mb-4 sm:mb-0 px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all shadow-sm">
+                    SUBMIT
+                </button>
+                <div className="font-bold text-xl sm:text-2xl text-gray-800">
+                    Current Level: <span className="text-blue-600">{level}</span>
                 </div>
             </div>
         </DndProvider>

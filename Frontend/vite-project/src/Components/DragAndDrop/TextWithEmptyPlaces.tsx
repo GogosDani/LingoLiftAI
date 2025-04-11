@@ -27,7 +27,6 @@ export default function TextWithEmptyPlaces({
                             word={filledSpaces[index] || ""}
                             onRemoveWord={onRemoveWord}
                             onDrop={onDrop}
-
                         />
                     )}
                 </React.Fragment>

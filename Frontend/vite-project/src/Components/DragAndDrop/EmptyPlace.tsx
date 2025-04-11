@@ -20,7 +20,6 @@ export default function EmptyPlace({
     const [{ isOver }, drop] = useDrop({
         accept: ItemTypes.WORD,
         drop: (item: any) => {
-            console.log('Dropped item:', item);
             onDrop(index, item.word);
             return { dropped: true };
         },
