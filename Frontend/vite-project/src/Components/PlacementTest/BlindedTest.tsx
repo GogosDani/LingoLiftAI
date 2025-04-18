@@ -21,6 +21,7 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
                 else {
                     throw new Error(`Error fetching test: ${response.status}`);
                 }
+                console.log(response.data.level);
             } catch (err) {
                 console.error("Failed to fetch writing test:", err);
             }
@@ -111,7 +112,7 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
                     SUBMIT
                 </button>
                 <div className="font-bold text-xl sm:text-2xl text-gray-800">
-                    Current Level: <span className="text-blue-600">{level}</span>
+                    Current Level: <span className="text-blue-600">"asd"</span>
                 </div>
             </div>
         </DndProvider>
