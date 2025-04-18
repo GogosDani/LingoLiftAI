@@ -15,7 +15,15 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
 
     useEffect(() => {
         async function getLevel() {
-
+            try {
+                const response = await api.get(`/api/level/${languageId}`);
+                if (response.status == 200) setLevel(response.data.level);
+                else {
+                    throw new Error(`Error fetching test: ${response.status}`);
+                }
+            } catch (err) {
+                console.error("Failed to fetch writing test:", err);
+            }
         }
         getLevel();
     }, [])
