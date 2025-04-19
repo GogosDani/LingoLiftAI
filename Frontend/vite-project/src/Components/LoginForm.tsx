@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { api } from "../axios/api";
+import { useNavigate } from "react-router-dom";
 
 type LoginFormProps = {
     show: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,6 +10,7 @@ export default function LoginForm({ show }: LoginFormProps) {
 
     const [loginData, setLoginData] = useState({ password: "", email: "" });
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
 
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
@@ -18,7 +20,7 @@ export default function LoginForm({ show }: LoginFormProps) {
                 email: loginData.email
             });
             if (response.status === 200) {
-                // Navigate here
+                navigate("/home");
                 return;
             }
         } catch (error: unknown) {

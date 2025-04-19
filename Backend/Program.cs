@@ -58,6 +58,8 @@ void AddServices()
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IAIClient, AIClient>();
     builder.Services.AddScoped<IUserLanguageRepository, UserLanguageRepository>();
+    builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+    builder.Services.AddScoped<ILevelRepository, LevelRepository>();
 }
 
 void AddDbContext()
@@ -90,6 +92,18 @@ void AddAuthentication()
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(issuerSigningKey)
                 ),
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var cookie = context.Request.Cookies["jwt"];
+                    if (!string.IsNullOrEmpty(cookie))
+                    {
+                        context.Token = cookie;
+                    }
+                    return Task.CompletedTask;
+                }
             };
         });
 }

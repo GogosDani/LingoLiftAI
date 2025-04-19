@@ -28,10 +28,7 @@ public class TestController : ControllerBase
     {
         try
         {
-            if (!HttpContext.Request.Cookies.TryGetValue("jwt", out var userId))
-            {
-                return Unauthorized(new { message = "User not authenticated" });
-            }
+            var userId = GetUserId();
             if (!await _repository.UserHasLevel(userId)) return Ok(new { TestAvailable = false });
             return Ok(new { TestAvailable = true });
         } 
@@ -92,14 +89,15 @@ public class TestController : ControllerBase
                 questions.Zip(request.Answers, (q, a) => $"{q}\n{a}"));
             var languageLevel = await _aiClient.GetAiAnswer(
                 $"Evaluate the user's {language.LanguageName} language level based on these writing samples:\n\n{formattedQA}\n\n" +
-                $"Use these criteria:\n" +
-                $"- Beginner: Basic vocabulary, simple sentences, frequent grammatical errors\n" +
-                $"- Elementary: Simple sentences, basic tenses, common vocabulary\n" +
-                $"- Intermediate: Some complex sentences, good vocabulary, occasional errors\n" +
-                $"- Upper Intermediate: Variety of structures, good control of grammar, few errors\n" +
-                $"- Advanced: Complex structures, rich vocabulary, natural expression\n" +
-                $"- Proficient: Near-native fluency, sophisticated language use\n\n" +
-                $"RESPOND WITH EXACTLY ONE WORD from the list above. No explanations or additional text.");
+                "Please only rate the answers, not the questions because the question are automatically generated." +
+                "Use these criteria:\n" +
+                "- Beginner: Basic vocabulary, simple sentences, frequent grammatical errors\n" +
+                "- Elementary: Simple sentences, basic tenses, common vocabulary\n" +
+                "- Intermediate: Some complex sentences, good vocabulary, occasional errors\n" +
+                "- Upper Intermediate: Variety of structures, good control of grammar, few errors\n" +
+                "- Advanced: Complex structures, rich vocabulary, natural expression\n" +
+                "- Proficient: Near-native fluency, sophisticated language use\n\n" +
+                "RESPOND WITH EXACTLY ONE WORD from the list above. No explanations or additional text.");
             if(!levels.Contains(languageLevel.ToLower().Trim()))  return StatusCode(500, new { message = "AI did not return a proper level" });
             await _repository.AddUserLanguageLevel(userId, request.LanguageId, languageLevel);
             return Ok(languageLevel);
@@ -214,12 +212,12 @@ public class TestController : ControllerBase
             var prompt =$"Create a fill-in-the-blank exercise in {language} for a {level} level student.\n\n" +
                         $"Requirements:\n" +
                         $"- Write a coherent passage (150-250 words)\n" +
-                        $"- Replace exactly 10 words with blanks (represented as '-----')\n" +
+                        $"- Replace exactly 10 words with blanks (represented as '_____')\n" +
                         $"- 7 blanks should be appropriate for {level} level\n" +
                         $"- 3 blanks should use vocabulary from the next level up\n" +
                         $"- Provide a list of 15 possible words (the 10 correct answers plus 5 distractors)\n\n" +
                         $"Return ONLY valid JSON in this exact format:\n" +
-                        $"{{\n  \"story\": \"Your text with ----- blanks here\",\n  " +
+                        $"{{\n  \"story\": \"Your text with _____ blanks here\",\n  " +
                         $"\"words\": [\"word1\", \"word2\", ... , \"word15\"],\n  " +
                         $"\"answers\": [\"correct1\", \"correct2\", ... , \"correct10\"]\n}}";
             var aiAnswer = await _aiClient.GetAiAnswer(prompt);

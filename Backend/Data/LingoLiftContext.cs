@@ -33,12 +33,12 @@ public class LingoLiftContext : DbContext
         modelBuilder.Entity<Language>(entity =>
             {
                 entity.HasData(
-                    new Language { Id = 1,  LanguageName = "English" },
-                    new Language { Id = 2, LanguageName = "Spanish" },
-                    new Language { Id = 3, LanguageName = "German" },
-                    new Language { Id = 4, LanguageName = "Hungarian" },
-                    new Language { Id = 5, LanguageName = "Italian" },
-                    new Language { Id = 6, LanguageName = "French" }
+                    new Language { Id = 1,  LanguageName = "English", Flag = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png"},
+                    new Language { Id = 2, LanguageName = "Spanish", Flag = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Spain.svg/1200px-Flag_of_Spain.svg.png"},
+                    new Language { Id = 3, LanguageName = "German", Flag = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Flag_of_Germany.svg/1280px-Flag_of_Germany.svg.png"},
+                    new Language { Id = 4, LanguageName = "Hungarian", Flag = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Flag_of_Hungary.svg/255px-Flag_of_Hungary.svg.png"},
+                    new Language { Id = 5, LanguageName = "Italian", Flag = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1200px-Flag_of_Italy.svg.png"},
+                    new Language { Id = 6, LanguageName = "French", Flag = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Flag_of_France.svg/2560px-Flag_of_France.svg.png" }
                 );
             }
         );

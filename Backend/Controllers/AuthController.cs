@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Backend.DTOs;
 using Backend.Services;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Backend.Controllers;
 
 [Route("api/auth")]
@@ -51,5 +53,16 @@ public class AuthController : ControllerBase
     {
         if (Request.Cookies.ContainsKey("jwt")) return Ok("Authenticated!");
         return Unauthorized("Not Authenticated!");
+    }
+    
+    [HttpPost("logout"), Authorize]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt", new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.Strict
+        });
+        return Ok(new { message = "Logged out successfully" });
     }
 }
