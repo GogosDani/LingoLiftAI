@@ -89,14 +89,15 @@ public class TestController : ControllerBase
                 questions.Zip(request.Answers, (q, a) => $"{q}\n{a}"));
             var languageLevel = await _aiClient.GetAiAnswer(
                 $"Evaluate the user's {language.LanguageName} language level based on these writing samples:\n\n{formattedQA}\n\n" +
-                $"Use these criteria:\n" +
-                $"- Beginner: Basic vocabulary, simple sentences, frequent grammatical errors\n" +
-                $"- Elementary: Simple sentences, basic tenses, common vocabulary\n" +
-                $"- Intermediate: Some complex sentences, good vocabulary, occasional errors\n" +
-                $"- Upper Intermediate: Variety of structures, good control of grammar, few errors\n" +
-                $"- Advanced: Complex structures, rich vocabulary, natural expression\n" +
-                $"- Proficient: Near-native fluency, sophisticated language use\n\n" +
-                $"RESPOND WITH EXACTLY ONE WORD from the list above. No explanations or additional text.");
+                "Please only rate the answers, not the questions because the question are automatically generated." +
+                "Use these criteria:\n" +
+                "- Beginner: Basic vocabulary, simple sentences, frequent grammatical errors\n" +
+                "- Elementary: Simple sentences, basic tenses, common vocabulary\n" +
+                "- Intermediate: Some complex sentences, good vocabulary, occasional errors\n" +
+                "- Upper Intermediate: Variety of structures, good control of grammar, few errors\n" +
+                "- Advanced: Complex structures, rich vocabulary, natural expression\n" +
+                "- Proficient: Near-native fluency, sophisticated language use\n\n" +
+                "RESPOND WITH EXACTLY ONE WORD from the list above. No explanations or additional text.");
             if(!levels.Contains(languageLevel.ToLower().Trim()))  return StatusCode(500, new { message = "AI did not return a proper level" });
             await _repository.AddUserLanguageLevel(userId, request.LanguageId, languageLevel);
             return Ok(languageLevel);
