@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { api } from "../../axios/api";
+import { useNavigate } from "react-router-dom";
 
 export default function TestResult({ languageId }: { languageId: number }) {
 
     const [level, setLevel] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function getUserLevel() {
@@ -18,6 +20,9 @@ export default function TestResult({ languageId }: { languageId: number }) {
             }
         }
         getUserLevel();
+        setTimeout(() => {
+            navigate("/home");
+        }, 3000)
     }, [])
 
     return (

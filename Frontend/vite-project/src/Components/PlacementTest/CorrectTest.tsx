@@ -83,7 +83,7 @@ export default function CorrectTest({ languageId, setStage }: { languageId: numb
                     SUBMIT
                 </button>
                 <div className="font-bold text-xl sm:text-2xl text-gray-800">
-                    Current Level: <span className="text-blue-600">asd</span>
+                    Current Level: <span className="text-blue-600">{level}</span>
                 </div>
             </div>
         </div>

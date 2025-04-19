@@ -105,14 +105,14 @@ export default function BlindedTest({ setStage, languageId }: { setStage: React.
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col px-60 pb-16 pt-8 sm:flex-row sm:items-center sm:justify-between">
                 <button
                     onClick={submitTest}
                     className="w-full sm:w-auto mb-4 sm:mb-0 px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all shadow-sm">
                     SUBMIT
                 </button>
                 <div className="font-bold text-xl sm:text-2xl text-gray-800">
-                    Current Level: <span className="text-blue-600">"asd"</span>
+                    Current Level: <span className="text-blue-600">{level}</span>
                 </div>
             </div>
         </DndProvider>

@@ -25,7 +25,7 @@ public class LevelController : ControllerBase
             var jwtToken = handler.ReadJwtToken(HttpContext.Request.Cookies["jwt"]);
             var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var level = await _repository.GetUserLevelByLanguageId(languageId, userId);
-            return Ok(new { level = level });
+            return Ok(new { level = level.LevelName });
         } 
         catch (Exception ex)
         {
