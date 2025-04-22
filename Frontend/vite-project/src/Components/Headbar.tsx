@@ -17,6 +17,7 @@ export default function Headbar({ showRegisterForm, showLoginForm }: HeaderProps
             if (response.status == 200) setLoggedIn(true);
             else {
                 setLoggedIn(false);
+                navigate("/");
             }
         }
         checkIfUserLoggedIn();

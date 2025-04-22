@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { api } from "../axios/api";
 import { useState } from "react";
 
@@ -10,6 +11,7 @@ export default function RegisterForm({ show }: RegisterFormProps) {
 
     const [registerData, setRegisterData] = useState({ password: "", email: "", username: "", confirmPassword: "" });
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
 
     async function handleRegister(e: React.FormEvent) {
         e.preventDefault();
@@ -25,11 +27,14 @@ export default function RegisterForm({ show }: RegisterFormProps) {
             const response = await api.post("/api/auth/register", { username: registerData.username, password: registerData.password, email: registerData.email });
             if (response.status === 200) {
                 show(prev => !prev);
-                await api.post("/api/auth/login", {
+                const loginResponse = await api.post("/api/auth/login", {
                     password: registerData.password,
                     email: registerData.email
                 });
-                return;
+                if (loginResponse.status == 200) {
+                    navigate("/home");
+                    return;
+                }
             }
         } catch (error: unknown) {
             if (error && typeof error === 'object' && 'response' in error) {
