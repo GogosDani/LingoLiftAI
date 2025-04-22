@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { api } from "../axios/api";
 
 type HeaderProps = {
-    showRegisterForm: React.Dispatch<React.SetStateAction<boolean>>;
-    showLoginForm: React.Dispatch<React.SetStateAction<boolean>>;
+    showRegisterForm?: React.Dispatch<React.SetStateAction<boolean>>;
+    showLoginForm?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function Headbar({ showRegisterForm, showLoginForm }: HeaderProps) {
+export default function Headbar({ showRegisterForm, showLoginForm }: HeaderProps = {}) {
     const navigate = useNavigate();
     const [loggedIn, setLoggedIn] = useState(false);
 
@@ -46,8 +46,8 @@ export default function Headbar({ showRegisterForm, showLoginForm }: HeaderProps
                 </div>
             ) : (
                 <div className="flex flex-row gap-4 md:gap-8 justify-center">
-                    <button onClick={() => showLoginForm(true)} className="self-center bg-blue-600 rounded-xl h-3/4 w-20 md:w-24 text-white font-bold"> Log in </button>
-                    <button onClick={() => showRegisterForm(true)} className="self-center bg-blue-600 rounded-xl h-3/4 w-20 md:w-24 text-white font-bold"> Sign up </button>
+                    <button onClick={() => showLoginForm && showLoginForm(true)} className="self-center bg-blue-600 rounded-xl h-3/4 w-20 md:w-24 text-white font-bold"> Log in </button>
+                    <button onClick={() => showRegisterForm && showRegisterForm(true)} className="self-center bg-blue-600 rounded-xl h-3/4 w-20 md:w-24 text-white font-bold"> Sign up </button>
                 </div>
             )}
         </div>
