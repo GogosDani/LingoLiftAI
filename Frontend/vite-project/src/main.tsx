@@ -6,6 +6,7 @@ import LeaderBoard from "./Pages/LeaderBoard";
 import DailyChallenge from "./Pages/DailyChallenge";
 import Home from "./Pages/Home";
 import PlacementTest from "./Pages/PlacementTest";
+import Wordset from "./Pages/Wordset";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/placement-test",
     element: <PlacementTest />
+  },
+  {
+    path: "/wordset",
+    element: <Wordset />
   }
 ])
 
