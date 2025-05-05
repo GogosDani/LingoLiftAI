@@ -60,6 +60,7 @@ void AddServices()
     builder.Services.AddScoped<IUserLanguageRepository, UserLanguageRepository>();
     builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
     builder.Services.AddScoped<ILevelRepository, LevelRepository>();
+    builder.Services.AddScoped<IWordsetRepository, WordsetRepository>();
 }
 
 void AddDbContext()

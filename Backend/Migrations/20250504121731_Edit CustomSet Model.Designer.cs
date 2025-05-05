@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(LingoLiftContext))]
-    partial class LingoLiftContextModelSnapshot : ModelSnapshot
+    [Migration("20250504121731_Edit CustomSet Model")]
+    partial class EditCustomSetModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,11 +210,13 @@ namespace Backend.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Sets");
                 });
@@ -597,6 +602,13 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.ApplicationUser", null)
                         .WithMany("CustomSets")
                         .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Backend.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Sets_ApplicationUser_UserId");
                 });
 
             modelBuilder.Entity("Backend.Models.ReadingQuestion", b =>
