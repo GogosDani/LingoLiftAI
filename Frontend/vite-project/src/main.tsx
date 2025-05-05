@@ -9,6 +9,7 @@ import PlacementTest from "./Pages/PlacementTest";
 import Wordset from "./Pages/Wordset";
 import CustomWordset from "./Pages/CustomWordset";
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
   {
     path: "/wordset/custom",
     element: <CustomWordset />
-  }
+  },
 ])
 
 const rootElement = document.getElementById("root");

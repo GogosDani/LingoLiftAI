@@ -1,3 +1,4 @@
+using Backend.DTOs.UserDTOs;
 using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -10,5 +11,13 @@ public class UserRepository : IUserRepository
     public UserRepository(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
+    }
+
+    public async Task<UserInfoResponse> GetUserInfos(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return null;
+        return new UserInfoResponse(user.Email, user.UserName, userId);
     }
 }
