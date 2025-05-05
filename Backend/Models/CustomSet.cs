@@ -8,6 +8,4 @@ public class CustomSet
     public int FirstLanguageId { get; init; }
     public int SecondLanguageId { get; init; }
     public ICollection<WordPair> WordPairs { get; set; } = new List<WordPair>();
-    public int LevelId { get; init; }
-    public Level Level { get; init; }
 }

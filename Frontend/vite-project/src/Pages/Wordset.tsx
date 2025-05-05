@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Headbar from "../Components/Headbar";
 import { api } from "../axios/api";
 
+
 export default function Wordset() {
     const navigate = useNavigate();
     const [wordsetId, setWordsetId] = useState(0);
 
     async function handleCreateOwnWordset() {
         try {
-            const response = await api.post("/api/wordset");
-            const data = response.data.id;
-            setWordsetId(data);
+            navigate("/wordset/custom");
         }
         catch (error) {
             console.error(error);
