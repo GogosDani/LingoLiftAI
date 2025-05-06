@@ -24,13 +24,7 @@ public class WordsetController : ControllerBase
     {
         try
         {
-            if (!HttpContext.Request.Cookies.TryGetValue("jwt", out var token))
-            {
-                return null;
-            }
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = GetUserId();
             int wordsetId = await _wordsetRepository.CreateWordset(
                 userId,
                 setName, 
@@ -100,5 +94,44 @@ public class WordsetController : ControllerBase
         {
             return StatusCode(500, $"Server error: {ex.Message}");
         }
+    }
+    public async Task<IActionResult> GetUsersWordsets()
+    {
+        try
+        {
+            var userId = GetUserId();
+            var sets = await _wordsetRepository.GetByUserId(userId);
+            return Ok(sets);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetWordsetById(int id)
+    {
+        try
+        {
+            var userId = GetUserId();
+            var set = await _wordsetRepository.GetById(id, userId);
+            return Ok(set);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
+    }
+
+    private string GetUserId()
+    {
+        if (!HttpContext.Request.Cookies.TryGetValue("jwt", out var token))
+        {
+            return null;
+        }
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        return jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
     }
 }

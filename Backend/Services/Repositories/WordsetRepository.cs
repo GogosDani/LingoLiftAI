@@ -70,4 +70,20 @@ public class WordsetRepository : IWordsetRepository
         await _context.SaveChangesAsync();
         return wordpair;
     }
+    public async Task<IEnumerable<CustomSet>> GetByUserId(string userId)
+    {
+        return _context.Sets.Where(s => s.UserId == userId);
+    }
+
+    public async Task<CustomSet> GetById(int id, string userId)
+    {
+        var set = await _context.Sets
+            .Include(s => s.WordPairs)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (set == null) throw new InvalidOperationException("Set not found!");
+        if (set.UserId != userId) throw new InvalidOperationException("This set is not owned by this user!");
+
+        return set;
+    }
 }

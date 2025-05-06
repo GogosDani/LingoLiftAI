@@ -9,4 +9,6 @@ public interface IWordsetRepository
     Task<bool> DeleteWordPair(int id);
     Task<bool> DeleteWordset(int id);
     Task<WordPair> EditWordPair(int id, string firstWord, string secondWord);
+    Task<IEnumerable<CustomSet>> GetByUserId(string userId);
+    Task<CustomSet> GetById(int id, string userId);
 }
