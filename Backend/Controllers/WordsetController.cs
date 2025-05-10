@@ -144,6 +144,20 @@ public class WordsetController : ControllerBase
             return StatusCode(500, $"Server error: {ex.Message}");
         }
     }
+    
+    [HttpPut]
+    public async Task<IActionResult> EditWordset(EditWordsetRequest request)
+    {
+        try
+        {
+            await _wordsetRepository.EditWordset(request.Id, request.Name);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
+    }
 
     private string GetUserId()
     {

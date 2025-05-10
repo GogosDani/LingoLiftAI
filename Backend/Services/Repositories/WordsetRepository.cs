@@ -84,4 +84,14 @@ public class WordsetRepository : IWordsetRepository
         if (set.UserId != userId) throw new InvalidOperationException("This set is not owned by this user!");
         return set;
     }
+    
+    public async Task<bool> EditWordset(int id, string name)
+    {
+        var set = await _context.Sets.FindAsync(id);
+        if(set == null) return false;
+        set.Name = name;
+        await _context.SaveChangesAsync();
+        var updatedSet = await _context.Sets.FindAsync(id);
+        return true;
+    }
 }

@@ -11,4 +11,5 @@ public interface IWordsetRepository
     Task<WordPair> EditWordPair(int id, string firstWord, string secondWord);
     Task<IEnumerable<CustomSet>> GetByUserId(string userId);
     Task<CustomSet> GetById(int id, string userId);
+    Task<bool> EditWordset(int id, string name);
 }
