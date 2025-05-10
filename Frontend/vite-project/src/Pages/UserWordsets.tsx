@@ -28,6 +28,7 @@ export default function UserWordsets() {
                 const data: Wordset[] = await response.data;
                 setWordsets(data);
                 setIsLoading(false);
+                console.log(data);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'An unknown error occurred');
             }
@@ -84,7 +85,6 @@ export default function UserWordsets() {
                             <div key={wordset.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 cursor-pointer relative" onClick={() => handleViewWordset(wordset.id)}>
                                 <h2 className="text-xl font-semibold text-gray-800 mb-2 pr-8">{wordset.name}</h2>
                                 <div className="flex items-center mb-4">
-                                    <div className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"> {wordset.firstLanguage} → {wordset.secondLanguage} </div>
                                     <div className="ml-2 text-gray-500 text-sm"> {wordset.wordCount || 0} words </div>
                                 </div>
                                 <button onClick={() => handleDelete(wordset.id)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors bg-transparent p-1 rounded-full hover:bg-red-50"> X</button>

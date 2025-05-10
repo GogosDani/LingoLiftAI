@@ -80,10 +80,8 @@ public class WordsetRepository : IWordsetRepository
         var set = await _context.Sets
             .Include(s => s.WordPairs)
             .FirstOrDefaultAsync(s => s.Id == id);
-
         if (set == null) throw new InvalidOperationException("Set not found!");
         if (set.UserId != userId) throw new InvalidOperationException("This set is not owned by this user!");
-
         return set;
     }
 }

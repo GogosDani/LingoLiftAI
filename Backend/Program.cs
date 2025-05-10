@@ -62,6 +62,13 @@ void AddServices()
     builder.Services.AddScoped<ILevelRepository, LevelRepository>();
     builder.Services.AddScoped<IWordsetRepository, WordsetRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.ReferenceHandler = null;
+        options.JsonSerializerOptions.WriteIndented = true; 
+    });
+
 }
 
 void AddDbContext()

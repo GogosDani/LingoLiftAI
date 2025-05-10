@@ -13,10 +13,12 @@ namespace Backend.Controllers;
 public class WordsetController : ControllerBase
 {
     private readonly IWordsetRepository _wordsetRepository;
+    private readonly ILanguageRepository _languageRepository;
 
-    public WordsetController(IWordsetRepository wordsetRepository)
+    public WordsetController(IWordsetRepository wordsetRepository, ILanguageRepository languageRepository)
     {
         _wordsetRepository = wordsetRepository ?? throw new ArgumentNullException(nameof(wordsetRepository));
+        _languageRepository = languageRepository ?? throw new ArgumentNullException(nameof(languageRepository));
     }
 
     [HttpPost]
@@ -95,6 +97,7 @@ public class WordsetController : ControllerBase
             return StatusCode(500, $"Server error: {ex.Message}");
         }
     }
+    [HttpGet]
     public async Task<IActionResult> GetUsersWordsets()
     {
         try
@@ -116,7 +119,25 @@ public class WordsetController : ControllerBase
         {
             var userId = GetUserId();
             var set = await _wordsetRepository.GetById(id, userId);
-            return Ok(set);
+            var firstLanguage = await _languageRepository.GetById(set.FirstLanguageId);
+            var secondLanguage = await _languageRepository.GetById(set.SecondLanguageId);
+            var wordPairs = set.WordPairs.Select(wp => new WordPairResponse(
+                wp.Id,
+                wp.FirstWord,
+                wp.SecondWord
+            )).ToList();
+            var wordsetResponse = new WordsetResponse(
+                set.Id,
+                set.Name,
+                firstLanguage,
+                secondLanguage,
+                wordPairs
+            );
+            return Ok(wordsetResponse);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {

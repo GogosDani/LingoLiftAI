@@ -170,6 +170,11 @@ public class LingoLiftContext : DbContext
             .WithMany(ct => ct.Sentences)
             .HasForeignKey(cs => cs.CorrectionTestId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<WordPair>()
+            .HasOne(wp => wp.Set)
+            .WithMany(cs => cs.WordPairs)
+            .HasForeignKey(wp => wp.SetId);
     }
     
     
