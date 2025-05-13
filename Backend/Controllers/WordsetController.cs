@@ -103,8 +103,8 @@ public class WordsetController : ControllerBase
         try
         {
             var userId = GetUserId();
-            var sets = await _wordsetRepository.GetByUserId(userId);
-            return Ok(sets);
+            var response = await _wordsetRepository.GetByUserId(userId);
+            return Ok(response);
         }
         catch (Exception ex)
         {

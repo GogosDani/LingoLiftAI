@@ -3,11 +3,23 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../axios/api';
 
 interface Wordset {
-    id: number;
-    name: string;
-    firstLanguage: string;
-    secondLanguage: string;
-    wordCount?: number;
+    id: number,
+    name: string,
+    firstLanguage: Language,
+    secondLanguage: Language,
+    wordPairs: Wordpairs[]
+}
+
+interface Wordpairs {
+    id: number,
+    firstWord: string,
+    secondWord: string
+}
+
+interface Language {
+    id: number,
+    languageName: string,
+    flag: string
 }
 
 export default function UserWordsets() {
@@ -84,10 +96,21 @@ export default function UserWordsets() {
                         {wordsets.map((wordset) => (
                             <div key={wordset.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 cursor-pointer relative" onClick={() => handleViewWordset(wordset.id)}>
                                 <h2 className="text-xl font-semibold text-gray-800 mb-2 pr-8">{wordset.name}</h2>
-                                <div className="flex items-center mb-4">
-                                    <div className="ml-2 text-gray-500 text-sm"> {wordset.wordCount || 0} words </div>
+                                <div className="flex items-center mb-3">
+                                    <div className="flex items-center">
+                                        <img src={wordset.firstLanguage.flag} className="w-6 h-4 mr-1 object-cover rounded-sm border border-gray-200" />
+                                        <span className="text-sm text-gray-700">{wordset.firstLanguage.languageName}</span>
+                                    </div>
+                                    <span className="mx-2 text-gray-400"> --- </span>
+                                    <div className="flex items-center">
+                                        <img src={wordset.secondLanguage.flag} className="w-6 h-4 mr-1 object-cover rounded-sm border border-gray-200" />
+                                        <span className="text-sm text-gray-700">{wordset.secondLanguage.languageName}</span>
+                                    </div>
                                 </div>
-                                <button onClick={() => handleDelete(wordset.id)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors bg-transparent p-1 rounded-full hover:bg-red-50"> X</button>
+                                <div className="flex items-center">
+                                    <div className="text-gray-500 text-sm">{wordset.wordPairs.length || 0} words</div>
+                                </div>
+                                <button onClick={() => { handleDelete(wordset.id) }} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors bg-transparent p-1 rounded-full hover:bg-red-50" > X </button>
                             </div>
                         ))}
                     </div>

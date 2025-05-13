@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Backend.Data;
 using Backend.Models;
 using Backend.Services;
@@ -64,9 +65,7 @@ void AddServices()
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.ReferenceHandler = null;
-        options.JsonSerializerOptions.WriteIndented = true; 
     });
 
 }
