@@ -23,6 +23,9 @@ public class LingoLiftContext : DbContext
     public DbSet<BlindedCorrect> BlindedCorrects { get; set; }
     public DbSet<CorrectionTest> CorrectionTests {get; set;}
     public DbSet<CorrectionSentence> CorrectionSentences { get; set; }
+    public DbSet<Topic> Topics { get; set; }
+    public DbSet<AiWordSet> AiWordSets { get; set; }
+    public DbSet<AiWordPair> AiWordPairs { get; set; }
 
     public LingoLiftContext(DbContextOptions<LingoLiftContext> options) : base(options)
     {
@@ -175,7 +178,80 @@ public class LingoLiftContext : DbContext
             .HasOne(wp => wp.Set)
             .WithMany(cs => cs.WordPairs)
             .HasForeignKey(wp => wp.SetId);
+        
+        modelBuilder.Entity<AiWordSet>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.UserId).HasMaxLength(450).IsRequired();
+            entity.Property(e => e.DifficultyLevel).HasMaxLength(50).IsRequired();
+            entity.HasOne(e => e.Topic);
+        });
+
+        modelBuilder.Entity<AiWordPair>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.FirstWord).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.SecondWord).HasMaxLength(100).IsRequired();
+        
+            entity.HasOne(e => e.WordSet)
+                .WithMany(ws => ws.WordPairs)
+                .HasForeignKey(e => e.WordSetId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Topic>().HasData(
+            new Topic { Id = 1, Name = "Sport", Description = "Sports disciplines, competitions, sporting events and equipment" },
+            new Topic { Id = 2, Name = "Weather", Description = "Weather phenomena, forecasts and seasons" },
+            new Topic { Id = 3, Name = "Food", Description = "Foods, cooking, recipes and gastronomy" },
+            new Topic { Id = 4, Name = "Travel", Description = "Travel, destinations, cultures and tourism" },
+            new Topic { Id = 5, Name = "Technology", Description = "Technological innovations, devices and digital world" },
+            new Topic { Id = 6, Name = "Music", Description = "Music genres, instruments, performers and concerts" },
+            new Topic { Id = 7, Name = "Movies", Description = "Films, cinema, actors and genres" },
+            new Topic { Id = 8, Name = "Health", Description = "Health, wellness, medicine and disease prevention" },
+            new Topic { Id = 9, Name = "Education", Description = "Learning, education, schools and academic disciplines" },
+            new Topic { Id = 10, Name = "Environment", Description = "Environmental protection, nature and ecology" },
+            new Topic { Id = 11, Name = "Business", Description = "Business, entrepreneurship, management and commerce" },
+            new Topic { Id = 12, Name = "Fashion", Description = "Fashion, clothing, styles and trends" },
+            new Topic { Id = 13, Name = "Politics", Description = "Politics, governance, elections and public affairs" },
+            new Topic { Id = 14, Name = "Animals", Description = "Animals, species, habitats and behavior" },
+            new Topic { Id = 15, Name = "Science", Description = "Scientific discoveries, research and innovations" },
+            new Topic { Id = 16, Name = "Art", Description = "Art forms, painting, sculpture and artists" },
+            new Topic { Id = 17, Name = "Books", Description = "Literature, books, authors and genres" },
+            new Topic { Id = 18, Name = "Space", Description = "Space exploration, planets, astronomy and space travel" },
+            new Topic { Id = 19, Name = "History", Description = "Historical eras, events, figures and locations" },
+            new Topic { Id = 20, Name = "Architecture", Description = "Architecture, buildings, styles and design" },
+            new Topic { Id = 21, Name = "Gardening", Description = "Gardening, plants, garden design and care" },
+            new Topic { Id = 22, Name = "Automotive", Description = "Vehicles, cars, motorcycles and transportation" },
+            new Topic { Id = 23, Name = "Photography", Description = "Photography, cameras, techniques and styles" },
+            new Topic { Id = 24, Name = "Fitness", Description = "Fitness, exercise, physical activity and sports" },
+            new Topic { Id = 25, Name = "Gaming", Description = "Video games, gaming platforms and game development" },
+            new Topic { Id = 26, Name = "Cooking", Description = "Cooking techniques, culinary arts and recipes" },
+            new Topic { Id = 27, Name = "Psychology", Description = "Psychology, behavior, personality and mental health" },
+            new Topic { Id = 28, Name = "Religion", Description = "Religions, belief systems, traditions and ceremonies" },
+            new Topic { Id = 29, Name = "Languages", Description = "Languages, language learning, communication and language families" },
+            new Topic { Id = 30, Name = "Economy", Description = "Economy, finance, markets and investments" },
+            new Topic { Id = 31, Name = "Geography", Description = "Geography, landscapes, countries and natural formations" },
+            new Topic { Id = 32, Name = "Astronomy", Description = "Astronomy, celestial bodies, galaxies and phenomena" },
+            new Topic { Id = 33, Name = "Electronics", Description = "Electronics, circuits, devices and development" },
+            new Topic { Id = 34, Name = "Mathematics", Description = "Mathematics, numbers, operations and equations" },
+            new Topic { Id = 35, Name = "Dance", Description = "Dance, dance styles, choreography and performances" },
+            new Topic { Id = 36, Name = "Comedy", Description = "Humor, stand-up, entertainment and comedy" },
+            new Topic { Id = 37, Name = "Biology", Description = "Biology, life processes, organisms and taxonomy" },
+            new Topic { Id = 38, Name = "Chemistry", Description = "Chemistry, elements, compounds and reactions" },
+            new Topic { Id = 39, Name = "Physics", Description = "Physics, natural laws, energy and particles" },
+            new Topic { Id = 40, Name = "Medicine", Description = "Medicine, healing, therapies and diagnostics" },
+            new Topic { Id = 41, Name = "Mythology", Description = "Mythology, legends, gods and stories" },
+            new Topic { Id = 42, Name = "Philosophy", Description = "Philosophy, thinkers, theories and movements" },
+            new Topic { Id = 43, Name = "Hobbies", Description = "Hobbies, leisure activities and collecting" },
+            new Topic { Id = 44, Name = "Culture", Description = "Cultures, customs, traditions and societies" },
+            new Topic {  Id = 45, Name = "Social Media", Description = "Social media, platforms, trends and communication" },
+            new Topic { Id = 46, Name = "Jobs", Description = "Professions, occupations, careers and labor market" },
+            new Topic { Id = 47, Name = "Family", Description = "Family life, relationships, generations and roles" },
+            new Topic { Id = 48, Name = "Transportation", Description = "Transportation, vehicles, infrastructure and logistics" },
+            new Topic { Id = 49, Name = "Law", Description = "Law, legislation, legal systems and cases" },
+            new Topic { Id = 50, Name = "Holidays", Description = "Holidays, vacations, traditions and events" }
+        );
     }
-    
-    
 }

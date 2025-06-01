@@ -63,6 +63,8 @@ void AddServices()
     builder.Services.AddScoped<ILevelRepository, LevelRepository>();
     builder.Services.AddScoped<IWordsetRepository, WordsetRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IAiWordSetRepository, AiWordsetRepository>();
+    builder.Services.AddScoped<ITopicRepository, TopicRepository>();
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = null;
