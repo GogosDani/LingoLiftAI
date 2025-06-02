@@ -11,6 +11,7 @@ import CustomWordset from "./Pages/CustomWordset";
 import UserWordsets from "./Pages/UserWordsets";
 import LearnWordset from "./Pages/LearnWordset";
 import AiWordsets from "./Pages/AiWordsets";
+import LearnAiWordset from "./Pages/LearnAiWordset";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/wordset/ai",
     element: <AiWordsets />
+  },
+  {
+    path: "/wordset/ai/:id",
+    element: <LearnAiWordset />
   }
 ])
 

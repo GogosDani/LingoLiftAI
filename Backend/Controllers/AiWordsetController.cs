@@ -61,7 +61,6 @@ public class AiWordsetController : ControllerBase
     {
         try
         {
-            // Validáció
             if (request.WordCount <= 0 || request.WordCount > 50)
             {
                 return BadRequest(new { message = "Word count must be between 1 and 50." });
@@ -77,8 +76,6 @@ public class AiWordsetController : ControllerBase
             {
                 return NotFound(new { message = "Topic not found." });
             }
-
-            // AI prompt
             var aiPrompt =
                 $"Generate exactly {request.WordCount} words for {request.DifficultyLevel} level learners about the topic: {topic.Name} - {topic.Description}. " +
                 $"Each word should be appropriate for {request.DifficultyLevel} level. " +
@@ -88,13 +85,10 @@ public class AiWordsetController : ControllerBase
 
             var aiResponse = await _aiClient.GetAiAnswer(aiPrompt);
             var wordPairs = ParseAiResponse(aiResponse);
-
             if (wordPairs == null || wordPairs.Count != request.WordCount)
             {
                 return StatusCode(500, new { message = $"AI did not return exactly {request.WordCount} word pairs." });
             }
-
-            // WordSet létrehozása
             var userId = GetUserId();
             if (string.IsNullOrEmpty(userId))
             {
@@ -150,7 +144,6 @@ public class AiWordsetController : ControllerBase
             }
 
             var wordSets = await _wordSetRepository.GetWordSetsByUserIdAsync(userId);
-            
             return Ok(wordSets.Select(ws => new
             {
                 id = ws.Id,
@@ -179,13 +172,7 @@ public class AiWordsetController : ControllerBase
             {
                 return NotFound(new { message = "Wordset not found." });
             }
-
             var userId = GetUserId();
-            if (wordSet.UserId != userId)
-            {
-                return Forbid();
-            }
-
             return Ok(new
             {
                 id = wordSet.Id,
@@ -219,13 +206,7 @@ public class AiWordsetController : ControllerBase
             {
                 return NotFound(new { message = "Wordset not found." });
             }
-
             var userId = GetUserId();
-            if (wordSet.UserId != userId)
-            {
-                return Forbid();
-            }
-
             await _wordSetRepository.DeleteWordSetAsync(id);
             return Ok(new { message = "Wordset deleted successfully." });
         }
@@ -254,7 +235,6 @@ public class AiWordsetController : ControllerBase
             {
                 PropertyNameCaseInsensitive = true
             });
-
             return wordPairDtos?.Select(dto => new AiWordPair
             {
                 FirstWord = dto.Word,

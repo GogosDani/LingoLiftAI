@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../axios/api';
-
+import { useNavigate } from 'react-router-dom';
 interface Topic {
     id: number;
     name: string;
@@ -37,6 +37,7 @@ export default function AiWordsets() {
     const [error, setError] = useState<string>('');
     const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const [createForm, setCreateForm] = useState<CreateWordsetForm>({
         topicId: '',
@@ -105,9 +106,6 @@ export default function AiWordsets() {
         }
     };
 
-    const handleViewWordset = (id: number): void => {
-        console.log('View wordset:', id);
-    };
 
     const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>, id: number): Promise<void> => {
         e.stopPropagation();
@@ -237,7 +235,6 @@ export default function AiWordsets() {
                     </div>
                 ) : wordsets.length === 0 ? (
                     <div className="bg-white rounded-xl shadow-md p-10 mb-8 text-center">
-                        <div className="text-6xl mb-4">🤖</div>
                         <p className="text-gray-600 text-lg mb-2">You don't have any AI wordsets yet.</p>
                         <p className="text-gray-500 mb-6">Generate your first wordset!</p>
                         <button onClick={handleCreateNew} className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md" > Generate AI Wordset </button>
@@ -245,7 +242,7 @@ export default function AiWordsets() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         {wordsets.map((wordset) => (
-                            <div key={wordset.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 cursor-pointer relative" onClick={() => handleViewWordset(wordset.id)} >
+                            <div key={wordset.id} onClick={() => navigate(`/wordset/ai/${wordset.id}`)} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 cursor-pointer relative" >
                                 <h2 className="text-xl font-semibold text-gray-800 mb-2 pr-8"> {wordset.name}  </h2>
                                 <div className="flex items-center mb-3">
                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(wordset.difficultyLevel)}`}> {wordset.difficultyLevel} </span>
