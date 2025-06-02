@@ -1,4 +1,5 @@
 using Backend.Data;
+using Backend.DTOs.WordsetDTOs;
 using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -69,5 +70,49 @@ public class WordsetRepository : IWordsetRepository
         wordpair.SecondWord = secondWord;
         await _context.SaveChangesAsync();
         return wordpair;
+    }
+    public async Task<IEnumerable<WordsetResponse>> GetByUserId(string userId)
+    {
+        var sets = await _context.Sets
+            .Include(s => s.WordPairs)
+            .Where(s => s.UserId == userId)
+            .Select(s => new 
+            {
+                Set = s,
+                FirstLanguage = _context.Languages.FirstOrDefault(l => l.Id == s.FirstLanguageId),
+                SecondLanguage = _context.Languages.FirstOrDefault(l => l.Id == s.SecondLanguageId)
+            })
+            .ToListAsync();
+        return sets.Select(item => 
+            new WordsetResponse(
+                item.Set.Id, 
+                item.Set.Name,
+                item.FirstLanguage,
+                item.SecondLanguage,
+                item.Set.WordPairs.Select(wp => 
+                    new WordPairResponse(wp.Id, wp.FirstWord, wp.SecondWord)
+                ).ToList()
+            )
+        ).ToList();
+    }
+
+    public async Task<CustomSet> GetById(int id, string userId)
+    {
+        var set = await _context.Sets
+            .Include(s => s.WordPairs)
+            .FirstOrDefaultAsync(s => s.Id == id);
+        if (set == null) throw new InvalidOperationException("Set not found!");
+        if (set.UserId != userId) throw new InvalidOperationException("This set is not owned by this user!");
+        return set;
+    }
+    
+    public async Task<bool> EditWordset(int id, string name)
+    {
+        var set = await _context.Sets.FindAsync(id);
+        if(set == null) return false;
+        set.Name = name;
+        await _context.SaveChangesAsync();
+        var updatedSet = await _context.Sets.FindAsync(id);
+        return true;
     }
 }

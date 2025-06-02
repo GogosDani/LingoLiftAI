@@ -29,7 +29,7 @@ export default function Wordset() {
                     <div className="mb-6">
                         <h2 className="text-xl font-bold text-gray-800 mb-4">  How would you like to learn?  </h2>
                         <div className="flex flex-col md:flex-row gap-4">
-                            <button className={`flex-1 p-4 rounded-lg border-2 transition-all ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-300" }`}>
+                            <button onClick={() => navigate("/wordset/ai")} className={`flex-1 p-4 rounded-lg border-2 transition-all ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-300" }`}>
                                 <div className="flex items-center">
                                     <div className="text-left">
                                         <h3 className="font-bold text-lg">AI-Generated WordSet</h3>

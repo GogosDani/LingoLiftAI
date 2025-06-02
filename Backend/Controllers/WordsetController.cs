@@ -13,10 +13,12 @@ namespace Backend.Controllers;
 public class WordsetController : ControllerBase
 {
     private readonly IWordsetRepository _wordsetRepository;
+    private readonly ILanguageRepository _languageRepository;
 
-    public WordsetController(IWordsetRepository wordsetRepository)
+    public WordsetController(IWordsetRepository wordsetRepository, ILanguageRepository languageRepository)
     {
         _wordsetRepository = wordsetRepository ?? throw new ArgumentNullException(nameof(wordsetRepository));
+        _languageRepository = languageRepository ?? throw new ArgumentNullException(nameof(languageRepository));
     }
 
     [HttpPost]
@@ -24,13 +26,7 @@ public class WordsetController : ControllerBase
     {
         try
         {
-            if (!HttpContext.Request.Cookies.TryGetValue("jwt", out var token))
-            {
-                return null;
-            }
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = GetUserId();
             int wordsetId = await _wordsetRepository.CreateWordset(
                 userId,
                 setName, 
@@ -100,5 +96,77 @@ public class WordsetController : ControllerBase
         {
             return StatusCode(500, $"Server error: {ex.Message}");
         }
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetUsersWordsets()
+    {
+        try
+        {
+            var userId = GetUserId();
+            var response = await _wordsetRepository.GetByUserId(userId);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetWordsetById(int id)
+    {
+        try
+        {
+            var userId = GetUserId();
+            var set = await _wordsetRepository.GetById(id, userId);
+            var firstLanguage = await _languageRepository.GetById(set.FirstLanguageId);
+            var secondLanguage = await _languageRepository.GetById(set.SecondLanguageId);
+            var wordPairs = set.WordPairs.Select(wp => new WordPairResponse(
+                wp.Id,
+                wp.FirstWord,
+                wp.SecondWord
+            )).ToList();
+            var wordsetResponse = new WordsetResponse(
+                set.Id,
+                set.Name,
+                firstLanguage,
+                secondLanguage,
+                wordPairs
+            );
+            return Ok(wordsetResponse);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> EditWordset(EditWordsetRequest request)
+    {
+        try
+        {
+            await _wordsetRepository.EditWordset(request.Id, request.Name);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
+    }
+
+    private string GetUserId()
+    {
+        if (!HttpContext.Request.Cookies.TryGetValue("jwt", out var token))
+        {
+            return null;
+        }
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        return jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
     }
 }

@@ -89,6 +89,7 @@ export default function CustomWordset() {
         setIsLoading(true);
         setError("");
         try {
+            await editWordset();
             for (const pair of wordPairs) {
                 if (pair.first.trim() === "" && pair.second.trim() === "") {
                     continue;
@@ -113,6 +114,15 @@ export default function CustomWordset() {
             setError("Failed to save wordset: unknown error");
         }
     }
+
+    async function editWordset() {
+        try {
+            const response = await api.put("/api/wordset", { id: wordsetId, name: wordsetName });
+        } catch (error) {
+            console.error("error occured while saving wordset!")
+            throw error;
+        }
+    };
 
     function handleCancel() {
         setWordsetName("");
