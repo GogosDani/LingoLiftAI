@@ -245,10 +245,10 @@ export default function AiWordsets() {
                             <div key={wordset.id} onClick={() => navigate(`/wordset/ai/${wordset.id}`)} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 cursor-pointer relative" >
                                 <h2 className="text-xl font-semibold text-gray-800 mb-2 pr-8"> {wordset.name}  </h2>
                                 <div className="flex items-center mb-3">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(wordset.difficultyLevel)}`}> {wordset.difficultyLevel} </span>
+                                    <span className={`px-2 py-1 rounded-full text-sm text-gray`}> {wordset.difficultyLevel} </span>
                                 </div>
-                                <div className="text-sm text-gray-600 mb-3"> Topic:
-                                    <span className="font-medium">{wordset.topicName}</span>
+                                <div className="text-sm mb-3 text-gray"> Topic:
+                                    <span className="font-medium text-gray">{wordset.topicName}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm text-gray-500">
                                     <span>{wordset.wordCount} words</span>

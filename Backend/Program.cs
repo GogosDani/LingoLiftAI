@@ -4,6 +4,7 @@ using Backend.Data;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.AIServices;
+using Backend.Services.ChallengeServices;
 using Backend.Services.Repositories;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,6 +66,9 @@ void AddServices()
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IAiWordSetRepository, AiWordsetRepository>();
     builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+    builder.Services.AddScoped<IChallengeRepository, ChallengeRepository>();
+    builder.Services.AddScoped<IDailyChallengeGeneratorService, DailyChallengeGeneratorService>();
+    builder.Services.AddHostedService<DailyChallengeBackgroundService>();
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = null;

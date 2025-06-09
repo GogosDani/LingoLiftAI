@@ -293,14 +293,20 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<string>("QuestionData")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .IsUnique();
 
                     b.ToTable("DailyChallenges");
                 });
@@ -884,21 +890,23 @@ namespace Backend.Migrations
                     b.Property<int>("DailyChallengeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("Points")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<int>("Seconds")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId", "DailyChallengeId");
 
                     b.HasIndex("DailyChallengeId");
+
+                    b.HasIndex("Score");
+
+                    b.HasIndex("UserId", "DailyChallengeId")
+                        .IsUnique();
 
                     b.ToTable("UserChallenges");
                 });
@@ -1105,17 +1113,21 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.UserChallenge", b =>
                 {
-                    b.HasOne("Backend.Models.DailyChallenge", null)
+                    b.HasOne("Backend.Models.DailyChallenge", "DailyChallenge")
                         .WithMany("UserChallenges")
                         .HasForeignKey("DailyChallengeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.ApplicationUser", null)
-                        .WithMany()
+                    b.HasOne("Backend.Models.ApplicationUser", "User")
+                        .WithMany("UserChallenges")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("DailyChallenge");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.UserLanguage", b =>
@@ -1173,6 +1185,8 @@ namespace Backend.Migrations
                     b.Navigation("CustomSets");
 
                     b.Navigation("Tests");
+
+                    b.Navigation("UserChallenges");
 
                     b.Navigation("UserLanguages");
                 });
