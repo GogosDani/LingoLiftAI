@@ -9,4 +9,5 @@ public class ApplicationUser : IdentityUser
     public ICollection<Test> Tests { get; set; } = new List<Test>();
     public ICollection<CustomSet> CustomSets { get; set; } = new List<CustomSet>();
     public ICollection<UserLanguage> UserLanguages { get; set; } = new List<UserLanguage>();
+    public ICollection<UserChallenge> UserChallenges { get; set; } = new List<UserChallenge>();
 }

@@ -253,5 +253,31 @@ public class LingoLiftContext : DbContext
             new Topic { Id = 49, Name = "Law", Description = "Law, legislation, legal systems and cases" },
             new Topic { Id = 50, Name = "Holidays", Description = "Holidays, vacations, traditions and events" }
         );
+        
+        modelBuilder.Entity<UserChallenge>()
+            .HasOne(uc => uc.User)
+            .WithMany(u => u.UserChallenges)
+            .HasForeignKey(uc => uc.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserChallenge>()
+            .HasOne(uc => uc.DailyChallenge)
+            .WithMany(dc => dc.UserChallenges)
+            .HasForeignKey(uc => uc.DailyChallengeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DailyChallenge>()
+            .HasIndex(dc => dc.Date)
+            .IsUnique();
+
+        modelBuilder.Entity<UserChallenge>()
+            .HasIndex(uc => new { uc.UserId, uc.DailyChallengeId })
+            .IsUnique();
+
+        modelBuilder.Entity<UserChallenge>()
+            .HasIndex(uc => uc.DailyChallengeId);
+
+        modelBuilder.Entity<UserChallenge>()
+            .HasIndex(uc => uc.Score);
     }
 }

@@ -26,7 +26,7 @@ export default function Home() {
                     <p className="text-gray-600 mt-2">What would you like to learn today?</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                    <div className="bg-green-500 hover:bg-green-600 rounded-xl p-6 text-white shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105">
+                    <div onClick={() => navigate("/daily-challenge")} className="bg-green-500 hover:bg-green-600 rounded-xl p-6 text-white shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105">
                         <div>
                             <h2 className="text-xl font-bold">Daily Challenge</h2>
                             <p className="text-sm opacity-90">Complete daily exercises to maintain your streak</p>
