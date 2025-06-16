@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Backend.DTOs.ChallengeDtos;
 using Backend.Models;
 using Backend.Services.AIServices;
 using Backend.Services.Repositories;
@@ -33,6 +34,7 @@ public class DailyChallengeGeneratorService : IDailyChallengeGeneratorService
             }
             var prompt = GenerateChallengePrompt(dateOnly);
             var aiResponse = await _aiService.GetAiAnswer(prompt);
+            _logger.LogWarning("AI response was: {Response}", aiResponse);
             var challenge = ParseAiResponseToChallenge(aiResponse, dateOnly);
             await _challengeRepository.CreateChallengeAsync(challenge);
             _logger.LogInformation($"Successfully generated challenge for {dateOnly:yyyy-MM-dd}");
@@ -56,89 +58,134 @@ public class DailyChallengeGeneratorService : IDailyChallengeGeneratorService
         }
     }
 
+    public async Task<UserAnswerEvaluationDto> EvaluateUserAnswersAsync(UserAnswerSubmissionDto userAnswers)
+    {
+        try
+        {
+            var today = DateTime.Today;
+            var challenge = await _challengeRepository.GetChallengeByDateAsync(today);
+            
+            if (challenge == null)
+            {
+                throw new InvalidOperationException("No challenge found for today");
+            }
+
+            var evaluationPrompt = GenerateEvaluationPrompt(challenge, userAnswers);
+            var aiResponse = await _aiService.GetAiAnswer(evaluationPrompt);
+            var evaluation = ParseAiResponseToEvaluation(aiResponse);
+            
+            _logger.LogInformation($"Successfully evaluated user answers for challenge {challenge.Id}");
+            return evaluation;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error evaluating user answers");
+            throw;
+        }
+    }
+
     private string GenerateChallengePrompt(DateTime date)
     {
         var dayOfWeek = date.DayOfWeek;
         var isWeekend = dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday;
-        var challengeTypes = new[] { "Vocabulary", "Translation", "GapFill" };
+        var challengeTypes = new[] { "Vocabulary", "Translation"};
         var selectedType = challengeTypes[new Random().Next(challengeTypes.Length)];
         
         return $@"
-Generate a Hungarian language learning challenge for {date:yyyy-MM-dd} ({dayOfWeek}).
+Generate an English language learning challenge for {date:yyyy-MM-dd} ({dayOfWeek}).
 
 Challenge type: {selectedType}
-Difficulty level: {(isWeekend ? "Fun and creative" : "Standard practice")}
 
 Please return the response EXACTLY in this JSON format:
 {{
-    ""content"": ""The complete challenge content including question, options, and correct answer"",
+    ""content"": ""The complete challenge content"",
     ""type"": ""{selectedType}""
 }}
 
 Requirements for each type:
 
-**Vocabulary**: Create a Hungarian vocabulary challenge with a word definition or synonym task.
+**Vocabulary**: Create exactly 10 English vocabulary words, nothing more just 10 english words, Only RESPONSE WITH THE 10 words nothing else
 Example content format:
-""What does 'könyv' mean in English? A) Book B) Table C) Car D) House | Correct: A""
+""1. book, 2. table, 3. chair, 4. mouse, ...""
 
-**Translation**: Create a translation challenge from English to Hungarian or vice versa.
+**Translation**: Create exactly 10 sentences, nothing more just 10 sentences for translation practice,  Only RESPONSE WITH THE 10 Sentences nothing else.
 Example content format:
-""Translate to Hungarian: 'I love reading books.' A) Szeretek könyveket olvasni B) Szeretem a könyveket C) Könyveket szeretek D) Olvasom a könyveket | Correct: A""
-
-**GapFill**: Create a sentence with missing words where users fill in the blanks.
-Example content format:
-""Fill in the blank: 'A macska ___ az asztalon.' A) ül B) fut C) úszik D) repül | Correct: A""
+""1. Translate: 'Szeretem a könyveket', 2. 'A macska az asztalon ül', ...""
 
 Additional requirements:
-- Content should be in mixed Hungarian/English as appropriate for the challenge type
-- Include 4 multiple choice options (A, B, C, D)
-- Clearly indicate the correct answer
-- Use this exact format: ""Question text A) Option1 B) Option2 C) Option3 D) Option4 | Correct: X""
-- Make it engaging and educational
-- {(isWeekend ? "Weekend challenges should be more creative and fun" : "Weekday challenges should focus on practical vocabulary")}
+- Do NOT include correct answers in the content
+- The AI will evaluate user answers separately
+- Focus on practical vocabulary and common phrases
 ";
+    }
+
+    private string GenerateEvaluationPrompt(DailyChallenge challenge, UserAnswerSubmissionDto userAnswers)
+    {
+        return $@"
+Evaluate the user's answers for today's Hungarian language learning challenge.
+
+Challenge Type: {challenge.Type}
+Challenge Content: {challenge.Content}
+
+User's Answers:
+{string.Join(Environment.NewLine, userAnswers.Answers.Select((answer, index) => $"{index + 1}. {answer}"))}
+
+Please evaluate each answer and return the response EXACTLY in this JSON format:
+{{
+    ""totalScore"": 0,
+    ""maxScore"": 10,
+}}
+";
+    }
+
+    private UserAnswerEvaluationDto ParseAiResponseToEvaluation(string aiResponse)
+    {
+        try
+        {
+            var evaluation = JsonSerializer.Deserialize<UserAnswerEvaluationDto>(aiResponse);
+            return evaluation;
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Failed to parse AI evaluation response");
+            throw new InvalidOperationException("Failed to parse AI evaluation response", ex);
+        }
     }
 
     private DailyChallenge ParseAiResponseToChallenge(string aiResponse, DateTime date)
     {
         try
         {
-            var jsonStart = aiResponse.IndexOf('{');
-            var jsonEnd = aiResponse.LastIndexOf('}');
-            if (jsonStart == -1 || jsonEnd == -1)
+            var cleaned = CleanJson(aiResponse);
+            var challengeData = JsonSerializer.Deserialize<ChallengeGenerationResponse>(cleaned);
+            if (string.IsNullOrWhiteSpace(challengeData.Type) ||
+                !Enum.TryParse<ChallengeType>(challengeData.Type, true, out var type))
             {
-                throw new InvalidOperationException("Invalid JSON format in AI response");
-            }
-            var jsonContent = aiResponse.Substring(jsonStart, jsonEnd - jsonStart + 1);
-            var challengeData = JsonSerializer.Deserialize<ChallengeData>(jsonContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-            if (challengeData == null)
-            {
-                throw new InvalidOperationException("Failed to deserialize challenge data");
-            }
-            if (!Enum.TryParse<ChallengeType>(challengeData.Type, true, out var challengeType))
-            {
-                challengeType = ChallengeType.Vocabulary; // Default fallback
+                throw new ArgumentException($"Invalid or missing challenge type: '{challengeData.Type}'");
             }
             return new DailyChallenge
             {
                 Date = date,
                 Content = challengeData.Content,
-                Type = challengeType
+                Type = type,
             };
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
-            _logger.LogError(ex, "Error parsing AI response to challenge");
-            throw;
+            _logger.LogError(ex, "Failed to parse AI challenge response");
+            throw new InvalidOperationException("Failed to parse AI challenge response", ex);
         }
     }
-
-    private class ChallengeData
+    
+    private string CleanJson(string raw)
     {
-        public string Content { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
+        if (raw.TrimStart().StartsWith("```"))
+        {
+            var lines = raw.Split('\n');
+            lines = lines.Where(line => !line.Trim().StartsWith("```")).ToArray();
+            return string.Join("\n", lines).Trim();
+        }
+        return raw.Trim('`').Trim();
     }
+
 }

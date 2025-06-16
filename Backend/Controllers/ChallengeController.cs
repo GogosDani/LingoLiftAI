@@ -1,8 +1,10 @@
 using Backend.DTOs.Challenge;
+using Backend.DTOs.ChallengeDtos;
 using Backend.Models;
 using Backend.Services.ChallengeServices;
 using Backend.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Backend.Controllers;
 
@@ -75,6 +77,21 @@ public class ChallengeController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Error generating challenge for {date:yyyy-MM-dd}");
+            return StatusCode(500, new { message = "Internal server error" });
+        }
+    }
+
+    [HttpPost("evaluate")]
+    public async Task<ActionResult<UserAnswerEvaluationDto>> EvaluateUserAnswers([FromBody] UserAnswerSubmissionDto userAnswers)
+    {
+        try
+        {
+            var evaluation = await _challengeGenerator.EvaluateUserAnswersAsync(userAnswers);
+            return Ok(evaluation);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error evaluating user answers");
             return StatusCode(500, new { message = "Internal server error" });
         }
     }
