@@ -19,6 +19,10 @@ LingoLiftAi is an application for language learning. Users can create flashcards
 
 ---
 
+## Project Journey & Milestones
+
+- **Backlog**: https://github.com/users/GogosDani/projects/2/views/9
+
 ## Screenshots
 
 ### Main Page
