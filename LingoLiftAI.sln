@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{F38C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{37576B86-942D-40A9-AD64-0898744E019D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LingoTest", "LingoTest\LingoTest.csproj", "{D2DE477C-EE74-425D-8DAA-9121EB5085D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,5 +25,9 @@ Global
 		{37576B86-942D-40A9-AD64-0898744E019D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37576B86-942D-40A9-AD64-0898744E019D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37576B86-942D-40A9-AD64-0898744E019D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2DE477C-EE74-425D-8DAA-9121EB5085D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DE477C-EE74-425D-8DAA-9121EB5085D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DE477C-EE74-425D-8DAA-9121EB5085D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DE477C-EE74-425D-8DAA-9121EB5085D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
