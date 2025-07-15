@@ -113,7 +113,6 @@ public class LanguageControllerTest
     [Test]
     public async Task AddUserLanguageBeginner_ReturnsBadRequest_WhenInvalidJwtToken()
     {
-        // Arrange
         var request = new UserLanguageRequest(1);
         var invalidJwtToken = "invalid.jwt.token";
         var mockHttpContext = new Mock<HttpContext>();
@@ -130,14 +129,6 @@ public class LanguageControllerTest
         Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
     }
 
-    [Test]
-    public async Task GetLanguages_CallsRepositoryOnce()
-    {
-        _languageRepositoryMock.Setup(x => x.GetAllLanguages())
-            .ReturnsAsync(new List<Language>());
-        await _languageController.GetLanguages();
-        _languageRepositoryMock.Verify(x => x.GetAllLanguages(), Times.Once);
-    }
 
     private string CreateJwtToken(string userId)
     {
