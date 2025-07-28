@@ -16,6 +16,8 @@ public class EmailSender : IEmailSender
     {
         var mail = _configuration["Email"];
         var pwd = _configuration["EmailPassword"];
+        Console.WriteLine(mail);
+        Console.WriteLine(pwd);
         var client = new SmtpClient( "smtp.gmail.com",587)
         {
             EnableSsl = true,

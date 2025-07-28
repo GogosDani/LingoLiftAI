@@ -12,6 +12,8 @@ import UserWordsets from "./Pages/UserWordsets";
 import LearnWordset from "./Pages/LearnWordset";
 import AiWordsets from "./Pages/AiWordsets";
 import LearnAiWordset from "./Pages/LearnAiWordset";
+import ResetPwd from "./Pages/ResetPwd";
+import ResetPwdRequest from "./Pages/ResetPwdRequest";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +59,16 @@ const router = createBrowserRouter([
   {
     path: "/wordset/ai/:id",
     element: <LearnAiWordset />
+  },
+  {
+    path: "/reset/password",
+    element: <ResetPwdRequest />
+  },
+  {
+    path: "/reset/password/new",
+    element: <ResetPwd />
   }
+
 ])
 
 const rootElement = document.getElementById("root");

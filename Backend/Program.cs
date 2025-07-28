@@ -87,9 +87,6 @@ void AddDbContext()
 
 void AddAuthentication()
 {
-        issuerSigningKey = builder.Configuration["JwtSecretKey"] ?? "test-secret-key-for-testing-purposes-minimum-32-characters";
-    validIssuer = builder.Configuration["JwtIssuer"] ?? "TestIssuer";
-        validAudience = builder.Configuration["JwtAudience"] ?? "TestAudience";
     builder.Services
         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -121,7 +118,6 @@ void AddAuthentication()
             };
         });
 }
-
 void RunMigration()
 {
     using (var scope = app.Services.CreateScope())

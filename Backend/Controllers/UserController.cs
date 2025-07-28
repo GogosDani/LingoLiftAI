@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Backend.DTOs;
 using Backend.Services.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
@@ -44,26 +45,64 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("forgot-password")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPwdRequest request)
     {
         try
         {
-            if (string.IsNullOrEmpty(request.Email))
+            if (request == null)
+            {
+                return BadRequest("Request cannot be null");
+            }
+            if (string.IsNullOrWhiteSpace(request.Email))
             {
                 return BadRequest("Email cannot be empty");
             }
-
+            if (!IsValidEmail(request.Email))
+            {
+                return BadRequest("Invalid email format");
+            }
             var token = await _userRepository.GetPasswordResetToken(request.Email);
-            string resetLink = $"{_configuration["FrontendUrl"]}/ResetPassword?token={token}";
+            string resetLink = $"{_configuration["FrontendUrl"]}/reset/password/new?email={Uri.EscapeDataString(request.Email)}&token={token}";
             await _emailSender.SendEmailAsync(
                 request.Email,
                 "Password Reset",
-                $"Please reset your password by clicking <a href='{resetLink}'>here</a>.");
+                $"Please reset your password by clicking <a href='{resetLink}'>here</a>");
+            
             return Ok("Password reset link sent to your email.");
         }
         catch (Exception ex)
         {
+            return StatusCode(500, "Internal server error");
+        }
+    }
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPwdRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(request.Token) || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.NewPassword))
+            {
+                return BadRequest("Invalid request.");
+            }
+            var succeed = await _userRepository.ResetPassword(request.Email, request.Token, request.NewPassword);
+            if(!succeed) return BadRequest("Error occured while resetting password.");
+            return Ok("Password reset successfully.");
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex.Message);
+        }
+    }
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
         }
     }
     

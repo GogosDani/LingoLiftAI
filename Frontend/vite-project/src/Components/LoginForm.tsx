@@ -44,6 +44,7 @@ export default function LoginForm({ show }: LoginFormProps) {
                     <input required className="pl-6 h-14 rounded-lg border border-gray-300" type="text" id="email-input" placeholder="Enter email" onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))} />
                     <input required className="pl-6 h-14 rounded-lg border border-gray-300" type="password" id="password-input" placeholder="Enter password" onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))} />
                     <button className="mt-8 h-12 font-bold text-white font-mono bg-gradient-to-br from-[#EF4765] to-[#FF9A5A] rounded-lg">Login</button>
+                    <p className='mt-10 cursor-pointer' onClick={() => navigate("/reset/password")}> Forgot Password? </p>
                 </div>
             </form>
         </div>
