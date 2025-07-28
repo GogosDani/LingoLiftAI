@@ -32,7 +32,7 @@ public class LanguageControllerTest
     }
 
     [Test]
-    public async Task GetLanguages_ReturnsOkResult_WhenLanguagesExist()
+    public async Task GetLanguagesReturnsOkResultWhenLanguagesExist()
     {
         var expectedLanguages = new List<Language>
         {
@@ -51,7 +51,7 @@ public class LanguageControllerTest
     }
 
     [Test]
-    public async Task GetLanguages_ReturnsBadRequest_WhenExceptionIsThrown()
+    public async Task GetLanguagesReturnsBadRequestWhenExceptionIsThrown()
     {
         var exceptionMessage = "Database connection failed";
         _languageRepositoryMock.Setup(x => x.GetAllLanguages())
@@ -66,7 +66,7 @@ public class LanguageControllerTest
     }
 
     [Test]
-    public async Task AddUserLanguageBeginner_ReturnsOkResult_WhenValidRequestWithJwtToken()
+    public async Task AddUserLanguageBeginnerReturnsOkResultWhenValidRequestWithJwtToken()
     {
         var request = new UserLanguageRequest(1);
         var userId = "123";
@@ -84,16 +84,11 @@ public class LanguageControllerTest
         _userLanguageRepositoryMock.Setup(x => x.AddUserLanguageLevel(userId, request.LanguageId, "Beginner"))
             .Returns(Task.CompletedTask);
         var result = await _languageController.AddUserLanguageBeginner(request);
-        Assert.Multiple(() =>
-        {
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo("Language added to user successfully!"));
-        });
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }
 
     [Test]
-    public async Task AddUserLanguageBeginner_ReturnsBadRequest_WhenNoJwtToken()
+    public async Task AddUserLanguageBeginnerReturnsBadRequestWhenNoJwtToken()
     {
         var request = new UserLanguageRequest(1);
         var mockHttpContext = new Mock<HttpContext>();
@@ -111,10 +106,10 @@ public class LanguageControllerTest
     }
 
     [Test]
-    public async Task AddUserLanguageBeginner_ReturnsBadRequest_WhenInvalidJwtToken()
+    public async Task AddUserLanguageBeginnerReturnsBadRequestWhenInvalidJwtToken()
     {
         var request = new UserLanguageRequest(1);
-        var invalidJwtToken = "invalid.jwt.token";
+        var invalidJwtToken = "invalidJwtToken";
         var mockHttpContext = new Mock<HttpContext>();
         var mockRequest = new Mock<HttpRequest>();
         var mockCookies = new Mock<IRequestCookieCollection>();

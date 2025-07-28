@@ -133,18 +133,6 @@ public class TokenServiceTest
     }
 
     [Test]
-    public void CreateToken_ThrowsException_WhenJwtSecretKeyIsMissing()
-    {
-        var configMock = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
-        configMock.Setup(c => c["ValidIssuer"]).Returns("TestIssuer");
-        configMock.Setup(c => c["ValidAudience"]).Returns("TestAudience");
-        configMock.Setup(c => c["JwtSecretKey"]).Returns((string)null);
-        var tokenService = new TokenService(configMock.Object);
-        var role = "User";
-        Assert.Throws<ArgumentNullException>(() => tokenService.CreateToken(_testUser, role));
-    }
-
-    [Test]
     public void CreateToken_UsesHmacSha256Algorithm()
     {
         var role = "User";

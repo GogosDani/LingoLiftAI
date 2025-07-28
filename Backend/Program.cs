@@ -8,6 +8,7 @@ using Backend.Services.Repositories;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -69,7 +70,7 @@ void AddServices()
     {
         options.JsonSerializerOptions.ReferenceHandler = null;
     });
-
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
 }
 
 void AddDbContext()
@@ -86,6 +87,9 @@ void AddDbContext()
 
 void AddAuthentication()
 {
+        issuerSigningKey = builder.Configuration["JwtSecretKey"] ?? "test-secret-key-for-testing-purposes-minimum-32-characters";
+    validIssuer = builder.Configuration["JwtIssuer"] ?? "TestIssuer";
+        validAudience = builder.Configuration["JwtAudience"] ?? "TestAudience";
     builder.Services
         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -148,7 +152,7 @@ void AddCors()
     {
         options.AddPolicy("AllowFrontend",
             builder => builder
-                .WithOrigins(frontendUrl)
+                .WithOrigins(frontendUrl ?? "http://localhost:3000")
                 .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
@@ -169,7 +173,8 @@ void AddIdentity()
             options.Password.RequireLowercase = false;
         })
         .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<UsersContext>();
+        .AddEntityFrameworkStores<UsersContext>()
+        .AddDefaultTokenProviders();
 }
 
 void ConfigureSwagger()
@@ -201,4 +206,10 @@ void ConfigureSwagger()
             }
         });
     });
+}
+
+
+public partial class Program
+{
+            
 }

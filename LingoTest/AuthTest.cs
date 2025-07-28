@@ -28,7 +28,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public async Task Register_ReturnsBadRequest_WhenRegistrationFails()
+    public async Task RegisterReturnsBadRequestWhenRegistrationFails()
     {
         var registrationRequest = new RegistrationRequest("test@test.com", "password123", "TestUser");
         var result = await _authController.Register(registrationRequest);
@@ -36,7 +36,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public async Task Register_ReturnsBadRequest_WhenExceptionIsThrown()
+    public async Task RegisterReturnsBadRequestWhenExceptionIsThrown()
     {
         var registrationRequest = new RegistrationRequest("test@test.com", "password123", "TestUser");
         var exceptionMessage = "Database connection failed";
@@ -56,7 +56,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public async Task Authenticate_ReturnsOk_WhenLoginIsSuccessful()
+    public async Task AuthenticateReturnsOkWhenLoginIsSuccessful()
     {
         var loginRequest = new LoginRequest("test@test.com", "password123");
         var successfulResult = new LoginResult 
@@ -79,7 +79,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public async Task Authenticate_ReturnsBadRequest_WhenLoginFails()
+    public async Task AuthenticateReturnsBadRequestWhenLoginFails()
     {
         var loginRequest = new LoginRequest("test@test.com", "wrongpassword");
         var failedResult = new LoginResult 
@@ -95,7 +95,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public void CheckAuthentication_ReturnsOk_WhenJwtCookieExists()
+    public void CheckAuthenticationReturnsOkWhenJwtCookieExists()
     {
         _authController.Request.Cookies = new MockRequestCookieCollection(new Dictionary<string, string>
         {
@@ -111,7 +111,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public void CheckAuthentication_ReturnsUnauthorized_WhenJwtCookieDoesNotExist()
+    public void CheckAuthenticationReturnsUnauthorizedWhenJwtCookieDoesNotExist()
     {
         _authController.Request.Cookies = new MockRequestCookieCollection(new Dictionary<string, string>());
         var result = _authController.CheckAuthentication();
@@ -124,7 +124,7 @@ public class AuthControllerTest
     }
 
     [Test]
-    public void Logout_ReturnsOk_AndDeletesCookie()
+    public void LogoutReturnsOkAndDeletesCookie()
     {
         var result = _authController.Logout();
         Assert.Multiple(() =>

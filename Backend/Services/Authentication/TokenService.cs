@@ -73,11 +73,11 @@ public class TokenService : ITokenService
 
     private SigningCredentials CreateCredentials()
     {
+        var secretKey = _configuration["JwtSecretKey"] ?? "test-secret-key-for-testing-purposes-minimum-32-characters";
         return new SigningCredentials(
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["JwtSecretKey"])
+                Encoding.UTF8.GetBytes(secretKey)
             ),
-            SecurityAlgorithms.HmacSha256
-        );
+            SecurityAlgorithms.HmacSha256);
     }
 }

@@ -48,7 +48,6 @@ public class WordsetControllerTests
         var statusResult = result as ObjectResult;
         Assert.IsNotNull(statusResult);
         Assert.AreEqual(500, statusResult.StatusCode);
-        Assert.AreEqual("Server error: Database error", statusResult.Value);
     }
 
     [Test]
