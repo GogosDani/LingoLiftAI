@@ -93,6 +93,21 @@ public class UserController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [HttpPatch]
+    public async Task<IActionResult> ChangeUserPassword([FromBody] ChangePasswordRequest model)
+    {
+        var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return BadRequest("UserId not found.");
+        }
+        var success = await _userRepository.ChangePasswordAsync(model.CurrentPassword, model.NewPassword, userId);
+        if (!success)
+        {
+            return BadRequest("Failed to change password.");
+        }
+        return Ok("Password changed successfully.");
+    }
     private bool IsValidEmail(string email)
     {
         try

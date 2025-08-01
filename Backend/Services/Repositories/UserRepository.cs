@@ -39,4 +39,15 @@ public class UserRepository : IUserRepository
         var result = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
         return result.Succeeded;
     }
+    public async Task<bool> ChangePasswordAsync(string currentPassword, string newPassword, string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+        var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+        return result.Succeeded;
+    }
+
 }

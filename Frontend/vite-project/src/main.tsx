@@ -14,6 +14,7 @@ import AiWordsets from "./Pages/AiWordsets";
 import LearnAiWordset from "./Pages/LearnAiWordset";
 import ResetPwd from "./Pages/ResetPwd";
 import ResetPwdRequest from "./Pages/ResetPwdRequest";
+import ProfilePage from "./Pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
   {
     path: "/reset/password/new",
     element: <ResetPwd />
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage />
   }
 
 ])
